@@ -20,7 +20,7 @@
 
 | 파일 | 내용 |
 |---|---|
-| `assets/source/mainVideo.mp4` | 원본(6.8MB, 1080p, 21.8초, 음성 포함). 보존용 |
+| `assets/source/mainVideo.mp4` | 원본(6.8MB, 1080p, 21.8초, 음성 포함). 보존용, **Git에는 올리지 않음**(로컬에만 있음) |
 | `themes/kapla/assets/video/hero.mp4` | 사이트용(약 1.4MB, 1080p, 음성 제거, H.264) |
 | `themes/kapla/assets/video/hero-poster.jpg` | 영상 로딩 중·모션 축소 설정에서 보이는 정지 이미지(약 70KB) |
 | `themes/kapla/assets/images/og-image.jpg` | OGP(SNS 공유) 이미지 1200×630 |

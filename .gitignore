@@ -23,3 +23,7 @@ dist/
 # local tool environments and raw image drop folder
 .venv-tools/
 /seed/inbox/
+
+# private: not versioned (home server notes, original source video)
+/docs/home-server.md
+/assets/source/
