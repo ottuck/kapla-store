@@ -8,7 +8,7 @@
 themes/kapla/              블록 테마 (theme.json, 템플릿, 패턴, 글꼴, 히어로 영상)
 plugins/kapla-shop-tweaks/ 송료·결제 표시·스팸 방지 등 작은 보정 플러그인
 scripts/                   WP-CLI 래퍼, 시드(페이지·상품·배송·문의폼·SEO), 자산 생성 스크립트
-seed/images/               상품 이미지(현재는 코드로 그린 임시 일러스트)
+seed/images/               상품 이미지(AI로 만든 사진 12종)
 docs/                      설계·결정·점검 기록
 ```
 

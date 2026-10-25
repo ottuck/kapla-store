@@ -2,24 +2,18 @@
 
 > 생성한 이미지는 `seed/inbox/`에 넣고 변환 스크립트를 실행한 뒤 `.\scripts\seed.ps1`을 실행하면 상품에 대표 이미지가 붙는다.
 
-## 임시 일러스트 (현재 적용 중)
+## 현재 적용된 이미지
 
-AI 사진 생성 모델을 쓸 수 없는 환경에서, 12종 모두 코드로 그린 일러스트(`scripts/build-product-art.py`, SVG → PNG)를 임시로 넣어 두었다. 공통 스타일(크림 배경, 왼쪽 석양빛, 글자·로고 없음)은 같고, 향마다 배경색이 다르다(SALAR 소금호수 / DUSK 석양 / CEDAR 삼나무). 사진처럼 보이지는 않으므로, 진짜 사진이나 AI 이미지가 생기면 같은 파일명으로 `seed/inbox/`에 넣어 교체한다. 일러스트를 다시 만들려면:
+12종 모두 AI로 만든 사진(1122 × 1402 px, 4:5)이 들어 있다. 공통 스타일(크림 배경, 왼쪽 석양빛, 글자·로고 없음)에 향마다 소재가 다르다(SALAR 소금 결정 / DUSK 석양빛과 돌 / CEDAR 삼나무 가지). 원본이 1600px보다 작아서 `prepare-images.py`는 늘리지 않고 그대로 쓴다. 상품 상세의 큰 이미지는 `woocommerce_single_image_width` 1000px로 만든다.
 
-```powershell
-.\.venv-tools\Scripts\python scripts\build-product-art.py   # seed/inbox/*.png 생성(특정 SKU만: SKU를 인자로)
-.\.venv-tools\Scripts\python scripts\prepare-images.py      # seed/images/*.jpg 로 변환
-.\scripts\seed.ps1
-```
-
-(`resvg-py`, `numpy`, `pillow`가 필요하다: `.\.venv-tools\Scripts\python -m pip install pillow numpy resvg-py`)
+처음에 코드로 그린 일러스트(`scripts/build-product-art.py`)는 `seed/inbox/_illustration/`에 보관해 두었다. 이 스크립트를 다시 실행하면 `seed/inbox/`에 같은 이름의 PNG가 생겨 사진과 겹치니, 실행하기 전에 확인한다.
 
 ## 작업 순서
 
 1. AI로 생성한 이미지를 `seed/inbox/`에 넣는다. 파일명은 SKU로 시작한다(PNG/JPG/WebP 모두 가능, 대소문자·`_` 무관).
    - 대표 이미지: `KP-OIL-SALAR.png`
    - 갤러리(선택): `KP-OIL-SALAR-2.png`, `KP-OIL-SALAR-3.png` … (상품 상세에서 썸네일로 보인다)
-2. 변환: 4:5로 가운데 기준 자르고, 1600×2000 JPG(약 600KB 이하)로 줄여 `seed/images/`에 저장한다.
+2. 변환: 4:5로 가운데 기준 자르고, 가로가 1600px보다 크면 1600×2000으로 줄여(작으면 그대로) JPG(약 600KB 이하)로 `seed/images/`에 저장한다.
 
 ```powershell
 .\.venv-tools\Scripts\python scripts\prepare-images.py
@@ -36,7 +30,7 @@ AI 사진 생성 모델을 쓸 수 없는 환경에서, 12종 모두 코드로 �
 
 | 항목 | 값 |
 |---|---|
-| 비율 / 크기 | 4:5 세로, 1600 × 2000 px 권장 (최소 1200 × 1500) |
+| 비율 / 크기 | 4:5 세로, 1600 × 2000 px 권장 (최소 1000 × 1250. 더 작으면 늘리지 않는다) |
 | 형식 | JPG (품질 85~90, 파일당 500KB 안팎까지 줄이면 좋다) |
 | 파일명 | SKU 그대로: `KP-OIL-SALAR.jpg` (대문자, 하이픈) |
 | 금지 | 실제 브랜드 로고·상표, 이미지 속 글자(AI는 글자를 자주 깨뜨린다), 사람 얼굴 |

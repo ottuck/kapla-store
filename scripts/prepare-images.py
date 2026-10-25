@@ -1,4 +1,6 @@
-"""AI로 만든 상품 이미지를 규격(4:5, 1600x2000, JPG)에 맞춰 seed/images/ 에 저장한다.
+"""AI로 만든 상품 이미지를 규격(4:5, 가로 최대 1600px, JPG)에 맞춰 seed/images/ 에 저장한다.
+
+원본이 1600px보다 작으면 늘리지 않고 그대로 쓴다(늘려도 선명해지지 않고 용량만 커진다).
 
 사용법: seed/inbox/ 에 원본(png/jpg/webp)을 넣고 실행한다.
   파일명은 SKU로 시작해야 한다. 예) KP-OIL-SALAR.png (대표 이미지), KP-OIL-SALAR-2.png (갤러리 2번째)
@@ -22,7 +24,7 @@ SKUS = [
     "KP-GIFT-TRIAL", "KP-GIFT-SET",
 ]
 TARGET = (1600, 2000)
-MIN_SIZE = (1200, 1500)
+MIN_SIZE = (1000, 1250)
 EXTS = {".png", ".jpg", ".jpeg", ".webp"}
 
 
@@ -58,7 +60,7 @@ def convert(src: Path, dest: Path) -> str:
             top = (img.height - new_h) // 2
             img = img.crop((0, top, img.width, top + new_h))
         note.append("4:5로 자름")
-    if img.width != TARGET[0]:
+    if img.width > TARGET[0]:
         img = img.resize(TARGET, Image.LANCZOS)
     quality = 88
     while True:

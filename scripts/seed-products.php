@@ -76,6 +76,8 @@ update_option( 'woocommerce_thumbnail_image_width', 600 );
 update_option( 'woocommerce_thumbnail_cropping', 'custom' );
 update_option( 'woocommerce_thumbnail_cropping_custom_width', 4 );
 update_option( 'woocommerce_thumbnail_cropping_custom_height', 5 );
+// 商品詳細の大きい画像(表示は約512pxなので、高解像度の画面向けに2倍弱の1000px)。高さは元画像の比率のまま
+update_option( 'woocommerce_single_image_width', 1000 );
 
 /* --- カテゴリ(原本: オイルパフューム / ハンドパフューム / ホーム&トラベル(ディフューザー・カーディフューザー・キャンドル) / ギフト) --- */
 $cat_oil     = kp_term( 'product_cat', 'オイルパフューム', 'oil-perfume' );
