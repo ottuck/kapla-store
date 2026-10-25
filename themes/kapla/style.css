@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.4.7
+Version: 0.4.10
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -204,6 +204,39 @@ body:not(.home) .kapla-header {
 
 .home .kapla-header .wp-block-navigation__responsive-container.is-menu-open a {
 	color: var(--wp--preset--color--ink);
+}
+
+/* 열린 메뉴: 화면 가장자리에 붙지 않게 여백을 주고, 항목을 크게 + 가는 구분선으로 */
+.kapla-header .wp-block-navigation:not(.has-background) .wp-block-navigation__responsive-container.is-menu-open {
+	padding: 1.5rem var(--wp--preset--spacing--60);
+	background-color: var(--wp--preset--color--cream);
+	color: var(--wp--preset--color--ink);
+}
+
+.kapla-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content {
+	padding-top: 4rem;
+}
+
+.kapla-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container {
+	gap: 0;
+	align-items: stretch;
+	width: 100%;
+}
+
+.kapla-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item {
+	display: block;
+	border-bottom: 1px solid var(--k-line);
+}
+
+.kapla-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content {
+	display: block;
+	padding: 1.1rem 0;
+	font-size: 1.125rem;
+	letter-spacing: 0.14em;
+}
+
+.kapla-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content::after {
+	display: none;
 }
 
 /* ==========================================================================
@@ -815,6 +848,46 @@ input[type="radio"] {
 
 @media (max-width: 719px) {
 	.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 2.5rem 1rem;
+	}
+}
+
+/* 검색 결과(templates/search.html): 샵 목록과 같은 4:5 카드 */
+.kapla-search-list {
+	gap: 3.5rem 1.75rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.kapla-search-list .wc-block-components-product-image {
+	margin: 0 0 1.1rem;
+	background: var(--wp--preset--color--sand);
+}
+
+.kapla-search-list .wc-block-components-product-image img {
+	width: 100%;
+	aspect-ratio: 4 / 5;
+	object-fit: cover;
+}
+
+.kapla-search-list .wp-block-post-title {
+	margin: 0 0 0.35rem;
+	font-family: var(--wp--preset--font-family--serif);
+	font-size: 1rem;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	line-height: 1.6;
+}
+
+.kapla-search-list .wp-block-post-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+@media (max-width: 719px) {
+	.kapla-shop .kapla-search-list.is-layout-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 2.5rem 1rem;
 	}

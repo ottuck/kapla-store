@@ -38,6 +38,16 @@ add_filter(
 	}
 );
 
+// サイト内検索は商品だけを対象にする(お知らせや固定ページが商品カードの形で混ざらないように)。
+add_action(
+	'pre_get_posts',
+	static function ( $query ) {
+		if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
+			$query->set( 'post_type', 'product' );
+		}
+	}
+);
+
 add_action(
 	'after_setup_theme',
 	static function () {
