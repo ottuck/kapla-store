@@ -21,18 +21,61 @@ function kp_term( string $taxonomy, string $name, string $slug, int $parent = 0 
 	return (int) $res['term_id'];
 }
 
+/* 画像ファイルを商品に添付し、添付ファイルIDを返す。同じ内容(ハッシュ)が既に添付済みなら再利用する */
+function kp_sideload( int $product_id, string $file, string $name ): int {
+	$hash     = md5_file( $file );
+	$existing = get_posts( array(
+		'post_type'      => 'attachment',
+		'post_parent'    => $product_id,
+		'post_status'    => 'inherit',
+		'meta_key'       => '_kapla_seed_hash',
+		'meta_value'     => $hash,
+		'fields'         => 'ids',
+		'posts_per_page' => 1,
+	) );
+	if ( $existing ) {
+		return (int) $existing[0];
+	}
+	$tmp = wp_tempnam( $name );
+	copy( $file, $tmp );
+	$id = media_handle_sideload( array( 'name' => $name, 'tmp_name' => $tmp ), $product_id );
+	if ( is_wp_error( $id ) ) {
+		return 0;
+	}
+	update_post_meta( $id, '_kapla_seed_hash', $hash );
+	return (int) $id;
+}
+
+/* seed/images/<SKU>.jpg が代表画像、<SKU>-2.jpg, -3.jpg … があればギャラリー画像。画像を差し替えて再実行すると更新される */
 function kp_attach_image( int $product_id, string $sku ): void {
-	$file = dirname( __DIR__ ) . '/seed/images/' . $sku . '.jpg';
-	if ( ! file_exists( $file ) || get_post_thumbnail_id( $product_id ) ) {
+	$dir  = dirname( __DIR__ ) . '/seed/images/';
+	$main = $dir . $sku . '.jpg';
+	if ( ! file_exists( $main ) ) {
 		return;
 	}
-	$tmp = wp_tempnam( $sku . '.jpg' );
-	copy( $file, $tmp );
-	$id = media_handle_sideload( array( 'name' => $sku . '.jpg', 'tmp_name' => $tmp ), $product_id );
-	if ( ! is_wp_error( $id ) ) {
+	$id = kp_sideload( $product_id, $main, $sku . '.jpg' );
+	if ( $id ) {
+		$old = (int) get_post_thumbnail_id( $product_id );
+		if ( $old && $old !== $id && get_post_meta( $old, '_kapla_seed_hash', true ) ) {
+			wp_delete_attachment( $old, true );
+		}
 		set_post_thumbnail( $product_id, $id );
 	}
+	$gallery = array();
+	foreach ( glob( $dir . $sku . '-[0-9]*.jpg' ) ?: array() as $file ) {
+		$gid = kp_sideload( $product_id, $file, basename( $file ) );
+		if ( $gid ) {
+			$gallery[] = $gid;
+		}
+	}
+	update_post_meta( $product_id, '_product_image_gallery', implode( ',', $gallery ) );
 }
+
+/* --- 商品サムネイルは 4:5(縦長)・幅600px。画像を添付する前に設定する(添付時にサイズが作られるため) --- */
+update_option( 'woocommerce_thumbnail_image_width', 600 );
+update_option( 'woocommerce_thumbnail_cropping', 'custom' );
+update_option( 'woocommerce_thumbnail_cropping_custom_width', 4 );
+update_option( 'woocommerce_thumbnail_cropping_custom_height', 5 );
 
 /* --- カテゴリ(原本: オイルパフューム / ハンドパフューム / ホーム&トラベル(ディフューザー・カーディフューザー・キャンドル) / ギフト) --- */
 $cat_oil     = kp_term( 'product_cat', 'オイルパフューム', 'oil-perfume' );

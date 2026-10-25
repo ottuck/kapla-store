@@ -1,6 +1,36 @@
 # 상품 이미지 AI 생성 가이드
 
-> 생성한 이미지는 `seed/images/<SKU>.jpg`로 저장한다. 그다음 `.\scripts\seed.ps1`(또는 `seed-products.php`)을 실행하면 상품에 자동으로 대표 이미지가 붙는다.
+> 생성한 이미지는 `seed/inbox/`에 넣고 변환 스크립트를 실행한 뒤 `.\scripts\seed.ps1`을 실행하면 상품에 대표 이미지가 붙는다.
+
+## 임시 일러스트 (현재 적용 중)
+
+AI 사진 생성 모델을 쓸 수 없는 환경에서, 12종 모두 코드로 그린 일러스트(`scripts/build-product-art.py`, SVG → PNG)를 임시로 넣어 두었다. 공통 스타일(크림 배경, 왼쪽 석양빛, 글자·로고 없음)은 같고, 향마다 배경색이 다르다(SALAR 소금호수 / DUSK 석양 / CEDAR 삼나무). 사진처럼 보이지는 않으므로, 진짜 사진이나 AI 이미지가 생기면 같은 파일명으로 `seed/inbox/`에 넣어 교체한다. 일러스트를 다시 만들려면:
+
+```powershell
+.\.venv-tools\Scripts\python scripts\build-product-art.py   # seed/inbox/*.png 생성(특정 SKU만: SKU를 인자로)
+.\.venv-tools\Scripts\python scripts\prepare-images.py      # seed/images/*.jpg 로 변환
+.\scripts\seed.ps1
+```
+
+(`resvg-py`, `numpy`, `pillow`가 필요하다: `.\.venv-tools\Scripts\python -m pip install pillow numpy resvg-py`)
+
+## 작업 순서
+
+1. AI로 생성한 이미지를 `seed/inbox/`에 넣는다. 파일명은 SKU로 시작한다(PNG/JPG/WebP 모두 가능, 대소문자·`_` 무관).
+   - 대표 이미지: `KP-OIL-SALAR.png`
+   - 갤러리(선택): `KP-OIL-SALAR-2.png`, `KP-OIL-SALAR-3.png` … (상품 상세에서 썸네일로 보인다)
+2. 변환: 4:5로 가운데 기준 자르고, 1600×2000 JPG(약 600KB 이하)로 줄여 `seed/images/`에 저장한다.
+
+```powershell
+.\.venv-tools\Scripts\python scripts\prepare-images.py
+```
+
+   `.venv-tools`가 없으면 한 번만 만든다: `python -m venv .venv-tools` 그리고 `.\.venv-tools\Scripts\python -m pip install pillow`
+
+3. 반영: `.\scripts\seed.ps1` — 상품에 이미지가 붙는다. 이미지를 바꿔서 다시 실행하면 이전 이미지는 지워지고 새 이미지로 교체된다(같은 이미지는 중복해서 올리지 않는다).
+4. 상품 카드는 4:5(세로) 비율, 폭 600px로 만들어진다(`seed-products.php`가 설정). 이 설정을 바꾸면 `.\scripts\wp.ps1 media regenerate --yes`로 썸네일을 다시 만든다.
+
+`seed/inbox/`(원본)는 Git에 올리지 않고, `seed/images/`(변환 결과)만 올린다.
 
 ## 규격
 
