@@ -1,10 +1,16 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
 <!-- wp:woocommerce/page-content-wrapper {"page":"cart"} -->
-<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|80","left":"var:preset|spacing|60","right":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"1320px"}} -->
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|80","left":"var:preset|spacing|60","right":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"1180px"}} -->
 <main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--70);padding-right:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--80);padding-left:var(--wp--preset--spacing--60)"><!-- wp:woocommerce/store-notices /-->
 
-<!-- wp:post-title {"level":1} /-->
+<!-- wp:group {"className":"kapla-page-head","style":{"spacing":{"padding":{"bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"760px"}} -->
+<div class="wp-block-group kapla-page-head" style="padding-bottom:var(--wp--preset--spacing--60)"><!-- wp:paragraph {"align":"center","className":"kapla-eyebrow"} -->
+<p class="has-text-align-center kapla-eyebrow">CART</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:post-title {"textAlign":"center","level":1} /--></div>
+<!-- /wp:group -->
 
 <!-- wp:post-content /--></main>
 <!-- /wp:group -->

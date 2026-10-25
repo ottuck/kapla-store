@@ -3,7 +3,9 @@
 使い方 (fonttools と brotli が入った Python で):
     python scripts/build-fonts.py <元フォントの置き場> <出力先 themes/kapla/assets/fonts>
 
-元フォント: CormorantGaramond[wght].ttf (wght 600 に固定して使う), ShipporiMincho-Medium.ttf (どちらも SIL OFL, google/fonts)
+元フォント: CormorantGaramond[wght].ttf (wght 600 に固定して使う), ShipporiMincho-Medium.ttf,
+          ZenKakuGothicNew-Regular.ttf / -Medium.ttf (すべて SIL OFL, google/fonts)
+    第3引数以降で logo / mincho / zen を指定すると、そのフォントだけ作り直す
 収録文字: ASCII・ラテン補助・記号・ひらがな・カタカナ・全角記号・JIS X 0208 第1水準の漢字(約2,960字)。
 収録外の文字はブラウザが次のフォント(OS の明朝/ゴシック)で表示する。
 """
@@ -59,16 +61,23 @@ def build(src: Path, dst: Path, unicodes: list[int]) -> None:
 
 def main() -> None:
     src_dir, out_dir = Path(sys.argv[1]), Path(sys.argv[2])
+    only = set(sys.argv[3:])  # 例: python build-fonts.py src out zen  (省略すると全部)
     out_dir.mkdir(parents=True, exist_ok=True)
+    kanji = jis_x_0208_kanji()
 
-    # ロゴ(英字のみ)
-    # 可変フォントの太さを 600 に固定してからサブセット化する
-    instanced = out_dir / "_CormorantGaramond-600.ttf"
-    instancer.instantiateVariableFont(TTFont(str(src_dir / "CormorantGaramond[wght].ttf")), {"wght": 600}).save(str(instanced))
-    build(instanced, out_dir / "CormorantGaramond-SemiBold.woff2", list(range(0x20, 0x7F)) + list(range(0xA0, 0x100)))
-    instanced.unlink()
-    # 見出し(明朝 Medium)
-    build(src_dir / "ShipporiMincho-Medium.ttf", out_dir / "ShipporiMincho-Medium.woff2", COMMON + jis_x_0208_kanji())
+    if not only or "logo" in only:
+        # ロゴ(英字のみ): 可変フォントの太さを 600 に固定してからサブセット化する
+        instanced = out_dir / "_CormorantGaramond-600.ttf"
+        instancer.instantiateVariableFont(TTFont(str(src_dir / "CormorantGaramond[wght].ttf")), {"wght": 600}).save(str(instanced))
+        build(instanced, out_dir / "CormorantGaramond-SemiBold.woff2", list(range(0x20, 0x7F)) + list(range(0xA0, 0x100)))
+        instanced.unlink()
+    if not only or "mincho" in only:
+        # 見出し(明朝 Medium)
+        build(src_dir / "ShipporiMincho-Medium.ttf", out_dir / "ShipporiMincho-Medium.woff2", COMMON + kanji)
+    if not only or "zen" in only:
+        # 本文(Zen Kaku Gothic New Regular / Medium)
+        for weight in ("Regular", "Medium"):
+            build(src_dir / f"ZenKakuGothicNew-{weight}.ttf", out_dir / f"ZenKakuGothicNew-{weight}.woff2", COMMON + kanji)
 
 
 if __name__ == "__main__":

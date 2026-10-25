@@ -1,16 +1,75 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.2.0
+Version: 0.3.0
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
 */
 
-/* 헤더: 메인 페이지에서는 영상 위에 겹쳐 흰 글씨로 표시한다 */
+/* ==========================================================================
+   0. 토큰과 기본
+   ========================================================================== */
+:root {
+	--k-line: #d9ccb6;            /* 장식용 가는 선(크림 위) */
+	--k-field-border: #9a8a78;    /* 입력란 테두리(대비 3:1 이상) */
+	--k-field-bg: #fbf8f2;
+	--k-radius: 2px;
+	--k-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+body {
+	font-feature-settings: "palt" 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+::selection {
+	background: var(--wp--preset--color--terracotta);
+	color: var(--wp--preset--color--paper);
+}
+
+/* 굵기는 Medium(500) 한 단계만 쓴다(웹폰트가 400/500이라 가짜 굵은 글씨를 피한다) */
+strong,
+b,
+th,
+summary,
+dt {
+	font-weight: 500;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* 키보드 포커스 표시 */
+:where(a, button, input, select, textarea, summary):focus-visible {
+	outline: 2px solid var(--wp--preset--color--terracotta-deep);
+	outline-offset: 3px;
+}
+
+/* ==========================================================================
+   1. 헤더
+   ========================================================================== */
 .kapla-header {
 	position: relative;
 	z-index: 10;
+}
+
+body:not(.home) .kapla-header {
+	border-bottom: 1px solid var(--k-line);
 }
 
 .home .kapla-header {
@@ -25,90 +84,13 @@ Text Domain: kapla
 	color: var(--wp--preset--color--paper);
 }
 
-/* 영상 위 헤더의 장바구니 개수 배지: 흰 배경에 흰 글씨가 되지 않도록 */
+/* 영상 위 헤더의 장바구니 개수 배지 */
 .home .kapla-header .wc-block-mini-cart__badge {
 	color: var(--wp--preset--color--ink);
 }
 
 .admin-bar.home .kapla-header {
 	top: var(--wp-admin--admin-bar--height, 32px);
-}
-
-/* 히어로: 영상이 로딩되는 동안과 모션 축소 설정에서 보이는 정지 이미지 */
-.kapla-hero {
-	background-color: var(--wp--preset--color--sunset-red);
-	background-image: url("assets/video/hero-poster.jpg");
-	background-position: center;
-	background-size: cover;
-}
-
-/* 히어로: 영상 위 글씨가 잘 읽히도록 */
-.kapla-hero .wp-block-cover__inner-container {
-	padding-bottom: var(--wp--preset--spacing--70);
-}
-
-.kapla-hero h1 {
-	color: var(--wp--preset--color--paper);
-	text-shadow: 0 1px 24px rgba(30, 21, 18, 0.35);
-}
-
-/* 모션을 줄이는 설정을 쓰는 사용자에게는 영상을 멈춘다 */
-@media (prefers-reduced-motion: reduce) {
-	.kapla-hero video {
-		display: none;
-	}
-
-}
-
-/* 푸터 링크는 밑줄 없이, 호버 시 밑줄 */
-.kapla-footer a {
-	text-decoration: none;
-}
-
-.kapla-footer a:hover {
-	text-decoration: underline;
-}
-
-/* 문의 폼의 스팸 방지용 숨김 입력란(사람에게는 보이지 않는다) */
-.kapla-hp {
-	position: absolute;
-	left: -9999px;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-}
-
-/* Contact Form 7 입력란 */
-.wpcf7 input[type="text"],
-.wpcf7 input[type="email"],
-.wpcf7 select,
-.wpcf7 textarea {
-	width: 100%;
-	padding: 0.75rem 1rem;
-	border: 1px solid var(--wp--preset--color--sand);
-	background: var(--wp--preset--color--paper);
-	font: inherit;
-	color: inherit;
-}
-
-.wpcf7 input[type="submit"] {
-	padding: 0.9rem 2.25rem;
-	border: 0;
-	background: var(--wp--preset--color--terracotta-deep);
-	color: var(--wp--preset--color--paper);
-	font: inherit;
-	letter-spacing: 0.12em;
-	cursor: pointer;
-}
-
-.wpcf7 input[type="submit"]:hover {
-	background: var(--wp--preset--color--ink);
-}
-
-/* 키보드 포커스 표시 */
-:where(a, button, input, select, textarea):focus-visible {
-	outline: 2px solid var(--wp--preset--color--terracotta-deep);
-	outline-offset: 3px;
 }
 
 /* 헤더 좌우 영역을 같은 폭으로 두어 로고를 가운데에 맞춘다 */
@@ -118,6 +100,30 @@ Text Domain: kapla
 
 .kapla-header__side .wp-block-navigation {
 	gap: var(--wp--preset--spacing--50);
+}
+
+/* 메뉴: 마우스를 올리면 밑줄이 왼쪽에서 그려진다 */
+.kapla-header .wp-block-navigation-item__content {
+	position: relative;
+	padding-block: 0.4rem;
+}
+
+.kapla-header .wp-block-navigation-item__content::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0.14em;
+	bottom: 0;
+	height: 1px;
+	background: currentColor;
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.35s var(--k-ease);
+}
+
+.kapla-header .wp-block-navigation-item__content:hover::after,
+.kapla-header .current-menu-item > .wp-block-navigation-item__content::after {
+	transform: scaleX(1);
 }
 
 /* 모바일: 오른쪽 메뉴(お知らせ·店舗)는 숨기고, 왼쪽 햄버거 메뉴 안에서 보여 준다 */
@@ -150,19 +156,1402 @@ Text Domain: kapla
 	color: var(--wp--preset--color--ink);
 }
 
-/* 푸터 */
+/* ==========================================================================
+   2. 히어로(메인)
+   ========================================================================== */
+.kapla-hero {
+	background-color: var(--wp--preset--color--sunset-red);
+	background-image: url("assets/video/hero-poster.jpg");
+	background-position: center;
+	background-size: cover;
+}
+
+.kapla-hero .wp-block-cover__inner-container {
+	padding-bottom: var(--wp--preset--spacing--70);
+}
+
+.kapla-hero h1 {
+	color: var(--wp--preset--color--paper);
+	text-shadow: 0 1px 24px rgba(30, 21, 18, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.kapla-hero video {
+		display: none;
+	}
+}
+
+/* ==========================================================================
+   3. 페이지 머리말(page.html 등) 과 작은 영문 라벨
+   ========================================================================== */
+.kapla-eyebrow {
+	margin: 0 0 var(--wp--preset--spacing--30);
+	font-family: var(--wp--preset--font-family--logo);
+	font-size: 0.875rem;
+	font-weight: 600;
+	letter-spacing: 0.32em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--terracotta-deep);
+}
+
+.kapla-eyebrow:empty,
+.kapla-lead:empty {
+	display: none;
+}
+
+.kapla-page-head h1 {
+	margin: 0;
+	font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+	letter-spacing: 0.1em;
+}
+
+.kapla-page-head h1::after {
+	content: "";
+	display: block;
+	width: 2.5rem;
+	height: 1px;
+	margin: var(--wp--preset--spacing--50) auto 0;
+	background: var(--wp--preset--color--terracotta);
+}
+
+.kapla-lead {
+	margin: var(--wp--preset--spacing--50) auto 0;
+	max-width: 36em;
+	color: var(--wp--preset--color--ink-soft);
+}
+
+/* ==========================================================================
+   4. 본문 서식(긴 글)
+   ========================================================================== */
+.kapla-page-body .wp-block-post-content > * + h2 {
+	margin-top: var(--wp--preset--spacing--70);
+}
+
+.kapla-page-body .wp-block-post-content h2 {
+	margin-bottom: var(--wp--preset--spacing--40);
+	padding-bottom: var(--wp--preset--spacing--30);
+	border-bottom: 1px solid var(--k-line);
+	font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+	letter-spacing: 0.08em;
+}
+
+.kapla-page-body .wp-block-post-content h3 {
+	margin-top: var(--wp--preset--spacing--60);
+	font-size: 1.125rem;
+	letter-spacing: 0.06em;
+}
+
+.kapla-page-body .wp-block-post-content p {
+	margin-block: 0 var(--wp--preset--spacing--40);
+}
+
+/* 페이지 끝의 데모 안내문은 위쪽을 넉넉히 띄운다 */
+.kapla-page-body .wp-block-post-content .kapla-notice {
+	margin-top: var(--wp--preset--spacing--60);
+}
+
+/* 아코디언 바로 위 제목은 아래 선을 없앤다(아코디언 위쪽 선과 겹치지 않게) */
+.kapla-page-body .wp-block-post-content h2:has(+ .wp-block-details) {
+	margin-bottom: var(--wp--preset--spacing--30);
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+/* 목록 */
+.wp-block-list {
+	padding-left: 1.25em;
+}
+
+.wp-block-list li {
+	margin-block: 0.4rem;
+	padding-left: 0.25em;
+}
+
+.wp-block-list li::marker {
+	color: var(--wp--preset--color--terracotta);
+}
+
+/* 구분선·인용 */
+.wp-block-separator {
+	border-width: 0 0 1px;
+	border-color: var(--k-line);
+	opacity: 1;
+}
+
+.wp-block-quote {
+	margin-inline: 0;
+	padding: 0.25rem 0 0.25rem 1.5rem;
+	border-left: 2px solid var(--wp--preset--color--terracotta);
+	color: var(--wp--preset--color--ink-soft);
+}
+
+/* 표: 줄무늬 없이 가는 선만(특정상거래법·店舗 안내) */
+.wp-block-table {
+	margin-block: var(--wp--preset--spacing--50);
+}
+
+.wp-block-table table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 0;
+	font-size: 0.9375rem;
+}
+
+.wp-block-table th,
+.wp-block-table td {
+	padding: 1.15rem 1rem 1.15rem 0;
+	border: 0;
+	border-bottom: 1px solid var(--k-line);
+	text-align: left;
+	vertical-align: top;
+	background: transparent;
+}
+
+.wp-block-table tr:first-child th,
+.wp-block-table tr:first-child td {
+	border-top: 1px solid var(--wp--preset--color--ink);
+}
+
+.wp-block-table tr:last-child th,
+.wp-block-table tr:last-child td {
+	border-bottom-color: var(--wp--preset--color--ink);
+}
+
+.wp-block-table th {
+	width: 30%;
+	min-width: 8em;
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+	letter-spacing: 0.1em;
+}
+
+.wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+	background-color: transparent;
+}
+
+@media (max-width: 599px) {
+	.wp-block-table th,
+	.wp-block-table td {
+		display: block;
+		width: auto;
+		padding: 0.25rem 0;
+		border: 0;
+	}
+
+	.wp-block-table tr {
+		display: block;
+		padding: 1rem 0;
+		border-bottom: 1px solid var(--k-line);
+	}
+
+	.wp-block-table tr:first-child {
+		border-top: 1px solid var(--wp--preset--color--ink);
+	}
+
+	.wp-block-table tr:first-child th,
+	.wp-block-table tr:first-child td,
+	.wp-block-table tr:last-child th,
+	.wp-block-table tr:last-child td {
+		border: 0;
+	}
+}
+
+/* 아코디언(자주 묻는 질문) */
+.wp-block-details {
+	margin: 0;
+	border-bottom: 1px solid var(--k-line);
+}
+
+.wp-block-details:first-of-type {
+	border-top: 1px solid var(--k-line);
+}
+
+.wp-block-details summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1.5rem;
+	padding: 1.25rem 0;
+	cursor: pointer;
+	list-style: none;
+	font-family: var(--wp--preset--font-family--serif);
+	font-size: 1.0625rem;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	transition: color 0.2s var(--k-ease);
+}
+
+.wp-block-details summary::-webkit-details-marker {
+	display: none;
+}
+
+.wp-block-details summary:hover {
+	color: var(--wp--preset--color--terracotta-deep);
+}
+
+/* 오른쪽의 + / − 표시 */
+.wp-block-details summary::after {
+	content: "";
+	flex: none;
+	width: 0.875rem;
+	height: 0.875rem;
+	background:
+		linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat,
+		linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+	transition: transform 0.3s var(--k-ease);
+}
+
+.wp-block-details[open] summary::after {
+	background:
+		linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+}
+
+.wp-block-details > :not(summary) {
+	margin: 0;
+	padding: 0 2.5rem 1.5rem 0;
+	color: var(--wp--preset--color--ink-soft);
+}
+
+.kapla-page-body .wp-block-post-content .wp-block-details + h2 {
+	margin-top: var(--wp--preset--spacing--70);
+}
+
+/* ==========================================================================
+   5. 버튼·입력란(공통)
+   ========================================================================== */
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce input.button.alt,
+.wpcf7 input[type="submit"],
+.wc-block-components-button:not(.is-link) {
+	display: inline-block;
+	padding: 0.95rem 2rem;
+	border: 1px solid var(--wp--preset--color--terracotta-deep);
+	border-radius: 0;
+	background: var(--wp--preset--color--terracotta-deep);
+	color: var(--wp--preset--color--paper);
+	font-family: inherit;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	letter-spacing: 0.16em;
+	line-height: 1.4;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.25s var(--k-ease), color 0.25s var(--k-ease), border-color 0.25s var(--k-ease);
+}
+
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover,
+.woocommerce #respond input#submit:hover,
+.woocommerce a.button.alt:hover,
+.woocommerce button.button.alt:hover,
+.wpcf7 input[type="submit"]:hover,
+.wc-block-components-button:not(.is-link):hover {
+	border-color: var(--wp--preset--color--ink);
+	background: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--paper);
+}
+
+.woocommerce button.button:disabled,
+.woocommerce button.button.disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+/* 입력란: 낮고 단정하게 */
+.woocommerce form .input-text,
+.woocommerce form input[type="text"],
+.woocommerce form input[type="email"],
+.woocommerce form input[type="password"],
+.woocommerce form input[type="tel"],
+.woocommerce form input[type="number"],
+.woocommerce form select,
+.woocommerce form textarea,
+.woocommerce-ordering select,
+.wpcf7 input[type="text"],
+.wpcf7 input[type="email"],
+.wpcf7 select,
+.wpcf7 textarea,
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form input[type="url"],
+.comment-form textarea {
+	width: 100%;
+	height: 2.75rem;
+	padding: 0 0.875rem;
+	border: 1px solid var(--k-field-border);
+	border-radius: var(--k-radius);
+	background-color: var(--k-field-bg);
+	color: var(--wp--preset--color--ink);
+	font: inherit;
+	font-size: 0.9375rem;
+	letter-spacing: 0.03em;
+	box-shadow: none;
+	transition: border-color 0.2s var(--k-ease), box-shadow 0.2s var(--k-ease);
+}
+
+.woocommerce form textarea,
+.wpcf7 textarea,
+.comment-form textarea {
+	height: auto;
+	min-height: 9rem;
+	padding: 0.75rem 0.875rem;
+	line-height: 1.8;
+}
+
+.woocommerce form .input-text:focus,
+.woocommerce form select:focus,
+.woocommerce form textarea:focus,
+.woocommerce-ordering select:focus,
+.wpcf7 input:focus,
+.wpcf7 textarea:focus,
+.comment-form input:focus,
+.comment-form textarea:focus {
+	border-color: var(--wp--preset--color--terracotta-deep);
+	box-shadow: 0 0 0 3px rgba(176, 118, 80, 0.2);
+	outline: none;
+}
+
+.woocommerce form label,
+.wpcf7 label,
+.comment-form label {
+	display: block;
+	margin-bottom: 0.4rem;
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+	letter-spacing: 0.1em;
+}
+
+.woocommerce form .required,
+.comment-form .required {
+	color: var(--wp--preset--color--sunset-red);
+	text-decoration: none;
+}
+
+.woocommerce form .form-row,
+.comment-form p {
+	margin: 0 0 1.25rem;
+	padding: 0;
+}
+
+/* 체크박스 줄 */
+.woocommerce form .woocommerce-form__label-for-checkbox,
+.comment-form-cookies-consent label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin: 0;
+	color: var(--wp--preset--color--ink);
+	font-size: 0.875rem;
+	letter-spacing: 0.04em;
+	cursor: pointer;
+}
+
+.comment-form-cookies-consent {
+	display: flex;
+	gap: 0.6rem;
+	align-items: flex-start;
+}
+
+.comment-form-cookies-consent label {
+	line-height: 1.7;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	accent-color: var(--wp--preset--color--terracotta-deep);
+}
+
+/* 비밀번호 보기 버튼 */
+.woocommerce form .show-password-input {
+	top: 0.85rem;
+	right: 0.85rem;
+	opacity: 0.6;
+}
+
+/* 문의 폼의 스팸 방지용 숨김 입력란(사람에게는 보이지 않는다) */
+.kapla-hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.wpcf7 p {
+	margin: 0 0 1.25rem;
+}
+
+/* ==========================================================================
+   6. WooCommerce 공통(안내 메시지·빵부스러기·페이지 번호)
+   ========================================================================== */
+.woocommerce-breadcrumb {
+	margin: 0 0 var(--wp--preset--spacing--60);
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+	letter-spacing: 0.08em;
+}
+
+.woocommerce-breadcrumb a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.woocommerce-breadcrumb a:hover {
+	color: var(--wp--preset--color--ink);
+	text-decoration: underline;
+	text-underline-offset: 0.3em;
+}
+
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin: 0 0 var(--wp--preset--spacing--50);
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--k-line);
+	border-left: 3px solid var(--wp--preset--color--terracotta);
+	border-radius: 0;
+	background: var(--wp--preset--color--paper);
+	color: var(--wp--preset--color--ink);
+	font-size: 0.9375rem;
+	list-style: none;
+}
+
+.woocommerce-error {
+	border-left-color: var(--wp--preset--color--sunset-red);
+}
+
+.woocommerce-message::before,
+.woocommerce-info::before,
+.woocommerce-error::before {
+	display: none;
+}
+
+.woocommerce-message .button,
+.woocommerce-info .button {
+	float: none;
+	order: 2;
+	padding: 0.6rem 1.25rem;
+}
+
+.woocommerce nav.woocommerce-pagination {
+	margin-top: var(--wp--preset--spacing--70);
+}
+
+.woocommerce nav.woocommerce-pagination ul {
+	display: flex;
+	justify-content: center;
+	gap: 0.25rem;
+	border: 0;
+}
+
+.woocommerce nav.woocommerce-pagination ul li {
+	border: 0;
+}
+
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+	padding: 0.5rem 0.9rem;
+	background: transparent;
+	color: var(--wp--preset--color--ink-soft);
+	text-decoration: none;
+}
+
+.woocommerce nav.woocommerce-pagination ul li a:hover,
+.woocommerce nav.woocommerce-pagination ul li span.current {
+	background: transparent;
+	color: var(--wp--preset--color--ink);
+	box-shadow: inset 0 -1px 0 currentColor;
+}
+
+/* ==========================================================================
+   7. 샵(목록)
+   ========================================================================== */
+.woocommerce-products-header {
+	text-align: center;
+	margin-bottom: var(--wp--preset--spacing--60);
+}
+
+.woocommerce-products-header__title {
+	margin: 0;
+	font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+	letter-spacing: 0.1em;
+}
+
+.woocommerce-products-header__title::before {
+	content: "SHOP";
+	display: block;
+	margin-bottom: var(--wp--preset--spacing--30);
+	font-family: var(--wp--preset--font-family--logo);
+	font-size: 0.875rem;
+	font-weight: 600;
+	letter-spacing: 0.32em;
+	color: var(--wp--preset--color--terracotta-deep);
+}
+
+.woocommerce-products-header__title::after {
+	content: "";
+	display: block;
+	width: 2.5rem;
+	height: 1px;
+	margin: var(--wp--preset--spacing--50) auto 0;
+	background: var(--wp--preset--color--terracotta);
+}
+
+.woocommerce .woocommerce-result-count {
+	margin: 0 0 var(--wp--preset--spacing--50);
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+	letter-spacing: 0.08em;
+	line-height: 2.75rem;
+}
+
+.woocommerce .woocommerce-ordering {
+	margin: 0 0 var(--wp--preset--spacing--50);
+}
+
+.woocommerce .woocommerce-ordering select {
+	width: auto;
+	min-width: 12rem;
+	height: 2.5rem;
+	font-size: 0.8125rem;
+}
+
+body.woocommerce ul.products {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 3.5rem 1.75rem;
+	align-items: stretch;
+	clear: both;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+body.woocommerce ul.products::before,
+body.woocommerce ul.products::after {
+	display: none;
+}
+
+body.woocommerce ul.products[class*="columns-"] li.product {
+	float: none;
+	width: auto;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+}
+
+@media (max-width: 1023px) {
+	body.woocommerce ul.products {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 719px) {
+	body.woocommerce ul.products {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 2.5rem 1rem;
+	}
+}
+
+.woocommerce ul.products li.product a.woocommerce-LoopProduct-link {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	color: inherit;
+	text-decoration: none;
+}
+
+.woocommerce ul.products li.product a img {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 4 / 5;
+	margin: 0 0 1.1rem;
+	object-fit: cover;
+	background: var(--wp--preset--color--sand);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+	margin: 0 0 0.35rem;
+	padding: 0;
+	font-family: var(--wp--preset--font-family--serif);
+	font-size: 1rem;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	line-height: 1.6;
+}
+
+.woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
+	text-decoration: underline;
+	text-underline-offset: 0.35em;
+	text-decoration-thickness: 1px;
+}
+
+.woocommerce ul.products li.product .price,
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+	color: var(--wp--preset--color--ink-soft);
+	font-family: var(--wp--preset--font-family--logo);
+	font-size: 1.1875rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+}
+
+.woocommerce ul.products li.product .price {
+	margin: 0 0 1rem;
+}
+
+/* 목록의 카트 버튼: 가는 테두리 버튼(마우스를 올리면 채워진다) */
+body.woocommerce ul.products li.product .button {
+	margin-top: 1rem;
+	padding: 0.7rem 1rem;
+	border-color: var(--wp--preset--color--ink);
+	background: transparent;
+	color: var(--wp--preset--color--ink);
+	text-align: center;
+}
+
+.woocommerce ul.products li.product .button:hover {
+	background: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--paper);
+}
+
+.woocommerce ul.products li.product .added_to_cart {
+	margin-top: 0.6rem;
+	font-size: 0.8125rem;
+	text-align: center;
+}
+
+/* 메인의 추천 상품(블록): 샵 목록과 같은 가는 테두리 버튼, 버튼 높이를 맞춘다 */
+.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template > li {
+	display: flex;
+	flex-direction: column;
+}
+
+.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-button {
+	margin-top: auto;
+	padding-top: 1rem;
+}
+
+.wp-block-woocommerce-product-collection .wc-block-components-product-button__button {
+	padding: 0.7rem 1.25rem;
+	border: 1px solid var(--wp--preset--color--ink);
+	background: transparent;
+	color: var(--wp--preset--color--ink);
+	font-size: 0.8125rem;
+	letter-spacing: 0.14em;
+}
+
+.wp-block-woocommerce-product-collection .wc-block-components-product-button__button:hover {
+	background: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--paper);
+}
+
+.wp-block-woocommerce-product-collection .wc-block-components-product-price {
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 1.125rem;
+}
+
+/* ==========================================================================
+   8. 상품 상세
+   ========================================================================== */
+.single-product div.product {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	column-gap: clamp(2rem, 5vw, 5.5rem);
+	align-items: start;
+}
+
+.single-product.woocommerce div.product > div.woocommerce-product-gallery {
+	width: 100%;
+	float: none;
+	margin: 0;
+}
+
+.single-product.woocommerce div.product > div.summary {
+	width: 100%;
+	float: none;
+	margin: 0;
+	padding-top: 0.5rem;
+}
+
+.single-product.woocommerce div.product > div.woocommerce-tabs,
+.single-product.woocommerce div.product > section.related,
+.single-product.woocommerce div.product > section.upsells {
+	grid-column: 1 / -1;
+	width: 100%;
+}
+
+@media (max-width: 799px) {
+	.single-product div.product {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.single-product.woocommerce div.product > div.woocommerce-product-gallery {
+		margin-bottom: var(--wp--preset--spacing--60);
+	}
+}
+
+.woocommerce-product-gallery__image img {
+	width: 100%;
+	background: var(--wp--preset--color--sand);
+}
+
+/* 돋보기(확대) 버튼은 쓰지 않는다 */
+.woocommerce-product-gallery__trigger {
+	display: none;
+}
+
+.single-product .product_title {
+	margin: 0 0 var(--wp--preset--spacing--40);
+	font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem);
+	letter-spacing: 0.08em;
+	line-height: 1.55;
+}
+
+.woocommerce div.product p.price {
+	margin: 0 0 var(--wp--preset--spacing--50);
+	color: var(--wp--preset--color--ink);
+	font-size: 1.625rem;
+}
+
+.woocommerce-product-details__short-description {
+	margin-bottom: var(--wp--preset--spacing--50);
+	padding-bottom: var(--wp--preset--spacing--50);
+	border-bottom: 1px solid var(--k-line);
+	color: var(--wp--preset--color--ink-soft);
+}
+
+.woocommerce-product-details__short-description p {
+	margin: 0;
+}
+
+.woocommerce div.product p.stock {
+	margin: 0 0 var(--wp--preset--spacing--40);
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+	letter-spacing: 0.08em;
+}
+
+.woocommerce div.product form.cart {
+	display: flex;
+	gap: 0.75rem;
+	align-items: stretch;
+	margin: 0 0 var(--wp--preset--spacing--50);
+}
+
+.woocommerce div.product form.cart .quantity {
+	margin: 0;
+}
+
+.woocommerce .quantity .qty {
+	width: 4.5rem;
+	height: 3.25rem;
+	padding: 0;
+	text-align: center;
+}
+
+.woocommerce div.product form.cart .single_add_to_cart_button {
+	flex: 1;
+	margin: 0;
+	padding-block: 0;
+	white-space: nowrap;
+}
+
+@media (max-width: 479px) {
+	.woocommerce div.product form.cart .single_add_to_cart_button {
+		padding-inline: 0.75rem;
+		letter-spacing: 0.08em;
+	}
+
+	.woocommerce .quantity .qty {
+		width: 3.75rem;
+	}
+}
+
+.woocommerce div.product .product_meta {
+	display: grid;
+	gap: 0.25rem;
+	padding-top: var(--wp--preset--spacing--40);
+	border-top: 1px solid var(--k-line);
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+	letter-spacing: 0.06em;
+}
+
+.woocommerce div.product .product_meta > span {
+	display: block;
+}
+
+.woocommerce div.product .product_meta a {
+	color: inherit;
+	text-underline-offset: 0.3em;
+}
+
+/* 탭(설명 / 리뷰): 박스 없이 밑줄만 */
+.woocommerce div.product .woocommerce-tabs {
+	margin-top: var(--wp--preset--spacing--80);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+	display: flex;
+	gap: 2.5rem;
+	margin: 0 0 var(--wp--preset--spacing--60);
+	padding: 0;
+	border-bottom: 1px solid var(--k-line);
+	list-style: none;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::after {
+	display: none;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+	display: block;
+	margin-bottom: -1px;
+	padding: 0.9rem 0;
+	border-bottom: 2px solid transparent;
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.9375rem;
+	font-weight: 400;
+	letter-spacing: 0.1em;
+	text-decoration: none;
+	transition: color 0.2s var(--k-ease);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover {
+	color: var(--wp--preset--color--ink);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active {
+	border: 0;
+	background: transparent;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a {
+	border-bottom-color: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--ink);
+}
+
+.woocommerce div.product .woocommerce-tabs .panel {
+	max-width: 760px;
+	margin: 0;
+	padding: 0;
+}
+
+/* 탭 이름과 같은 제목은 중복이라 숨긴다 */
+.woocommerce div.product .woocommerce-tabs .panel > h2:first-child {
+	display: none;
+}
+
+/* 리뷰 */
+.woocommerce #reviews #comments h2,
+.woocommerce #reviews .comment-reply-title {
+	display: block;
+	margin: 0 0 var(--wp--preset--spacing--40);
+	font-family: var(--wp--preset--font-family--serif);
+	font-size: 1.25rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+}
+
+.woocommerce #reviews #comments .woocommerce-noreviews {
+	margin-bottom: var(--wp--preset--spacing--60);
+	color: var(--wp--preset--color--ink-soft);
+}
+
+.woocommerce #reviews #review_form_wrapper {
+	margin-top: var(--wp--preset--spacing--60);
+	padding: var(--wp--preset--spacing--60);
+	border: 1px solid var(--k-line);
+	background: var(--wp--preset--color--paper);
+}
+
+.woocommerce #reviews #review_form_wrapper .comment-reply-title {
+	font-size: 1.125rem;
+}
+
+.woocommerce #reviews .comment-notes {
+	margin: 0 0 var(--wp--preset--spacing--50);
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.8125rem;
+}
+
+.woocommerce #reviews .comment-form-author,
+.woocommerce #reviews .comment-form-email {
+	max-width: 28rem;
+}
+
+.woocommerce p.stars a,
+.woocommerce .star-rating {
+	color: var(--wp--preset--color--terracotta);
+}
+
+.woocommerce #reviews #comments ol.commentlist {
+	margin: 0 0 var(--wp--preset--spacing--60);
+	padding: 0;
+}
+
+.woocommerce #reviews #comments ol.commentlist li .comment_container {
+	display: grid;
+	grid-template-columns: 3rem 1fr;
+	gap: 1.25rem;
+}
+
+.woocommerce #reviews #comments ol.commentlist li img.avatar {
+	position: static;
+	width: 3rem;
+	height: 3rem;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--wp--preset--color--sand);
+}
+
+.woocommerce #reviews #comments ol.commentlist li .comment-text {
+	margin: 0;
+	padding: 0 0 var(--wp--preset--spacing--50);
+	border: 0;
+	border-bottom: 1px solid var(--k-line);
+	border-radius: 0;
+}
+
+/* 관련 상품 */
+.single-product .related.products {
+	margin-top: var(--wp--preset--spacing--80);
+}
+
+.single-product .related.products > h2 {
+	margin: 0 0 var(--wp--preset--spacing--60);
+	font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+	letter-spacing: 0.1em;
+	text-align: center;
+}
+
+.single-product .related.products > h2::after {
+	content: "";
+	display: block;
+	width: 2.5rem;
+	height: 1px;
+	margin: var(--wp--preset--spacing--40) auto 0;
+	background: var(--wp--preset--color--terracotta);
+}
+
+/* ==========================================================================
+   9. 마이 계정
+   ========================================================================== */
+.kapla-page-body .woocommerce-account .wp-block-post-content h2,
+.woocommerce-account .wp-block-post-content .woocommerce h2 {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.woocommerce-account .woocommerce > h2,
+.woocommerce-account .u-column1 > h2,
+.woocommerce-account .u-column2 > h2 {
+	margin: 0 0 var(--wp--preset--spacing--40);
+	font-size: 1.25rem;
+	letter-spacing: 0.1em;
+}
+
+.woocommerce-account form.login,
+.woocommerce-account form.register,
+.woocommerce-account form.lost_reset_password {
+	max-width: 30rem;
+	margin: 0;
+	padding: var(--wp--preset--spacing--60);
+	border: 1px solid var(--k-line);
+	border-radius: 0;
+	background: var(--wp--preset--color--paper);
+}
+
+.woocommerce-account form.login .form-row-first,
+.woocommerce-account form.login .form-row-last {
+	width: 100%;
+	float: none;
+}
+
+.woocommerce-form-login .woocommerce-form-login__rememberme {
+	margin-right: 1rem;
+}
+
+.woocommerce-form-login__submit {
+	margin: 0 1rem 0 0;
+}
+
+.woocommerce-account .lost_password {
+	margin: var(--wp--preset--spacing--40) 0 0;
+	font-size: 0.8125rem;
+}
+
+.woocommerce-account.logged-in .woocommerce {
+	display: grid;
+	grid-template-columns: 14rem minmax(0, 1fr);
+	gap: var(--wp--preset--spacing--70);
+	align-items: start;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation,
+.woocommerce-account .woocommerce-MyAccount-content {
+	float: none;
+	width: auto;
+}
+
+.woocommerce-MyAccount-navigation ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid var(--k-line);
+}
+
+.woocommerce-MyAccount-navigation li a {
+	display: block;
+	padding: 0.85rem 0;
+	border-bottom: 1px solid var(--k-line);
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.9375rem;
+	letter-spacing: 0.08em;
+	text-decoration: none;
+}
+
+.woocommerce-MyAccount-navigation li a:hover,
+.woocommerce-MyAccount-navigation li.is-active a {
+	color: var(--wp--preset--color--ink);
+}
+
+.woocommerce-MyAccount-navigation li.is-active a {
+	font-weight: 500;
+	box-shadow: inset 2px 0 0 var(--wp--preset--color--terracotta);
+	padding-left: 0.85rem;
+}
+
+@media (max-width: 799px) {
+	.woocommerce-account.logged-in .woocommerce {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--wp--preset--spacing--50);
+	}
+}
+
+/* 표(주문 내역 등) */
+.woocommerce table.shop_table {
+	border: 0;
+	border-collapse: collapse;
+	border-radius: 0;
+}
+
+.woocommerce table.shop_table th,
+.woocommerce table.shop_table td {
+	padding: 1rem 0.75rem 1rem 0;
+	border: 0;
+	border-bottom: 1px solid var(--k-line);
+}
+
+/* ==========================================================================
+   10. 카트·결제(블록)
+   ========================================================================== */
+.wc-block-components-text-input input,
+.wc-block-components-combobox .components-combobox-control__input,
+.wc-block-components-address-form select,
+.wc-blocks-components-select__select,
+.wc-block-components-textarea,
+.wc-block-components-quantity-selector {
+	border-color: var(--k-field-border) !important;
+	border-radius: var(--k-radius) !important;
+	background-color: var(--k-field-bg) !important;
+}
+
+.wc-block-components-text-input input:focus,
+.wc-block-components-combobox .components-combobox-control__input:focus {
+	border-color: var(--wp--preset--color--terracotta-deep) !important;
+	box-shadow: 0 0 0 3px rgba(176, 118, 80, 0.2) !important;
+}
+
+.wc-block-components-text-input label,
+.wc-blocks-components-select__label {
+	color: var(--wp--preset--color--ink-soft);
+	letter-spacing: 0.04em;
+}
+
+.wc-block-components-totals-wrapper,
+.wc-block-components-order-summary,
+.wp-block-woocommerce-cart-order-summary-block,
+.wp-block-woocommerce-checkout-order-summary-block {
+	border-color: var(--k-line) !important;
+}
+
+.wc-block-components-sidebar-layout .wc-block-components-main {
+	padding-right: var(--wp--preset--spacing--60);
+}
+
+.wc-block-checkout__sidebar,
+.wc-block-cart__sidebar {
+	padding: var(--wp--preset--spacing--50);
+	border: 1px solid var(--k-line);
+	background: var(--wp--preset--color--paper);
+}
+
+.wc-block-components-title,
+.wc-block-components-checkout-step__title {
+	font-family: var(--wp--preset--font-family--serif);
+	font-size: 1.125rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+}
+
+.wc-block-components-product-name {
+	color: var(--wp--preset--color--ink);
+	font-family: var(--wp--preset--font-family--serif);
+	letter-spacing: 0.04em;
+	text-decoration: none;
+}
+
+.wc-block-components-product-price,
+.wc-block-formatted-money-amount {
+	font-family: var(--wp--preset--font-family--logo);
+	font-weight: 600;
+	letter-spacing: 0.04em;
+}
+
+.wc-block-components-button:not(.is-link) {
+	min-height: 3.25rem;
+}
+
+/* ==========================================================================
+   11. お知らせ(목록)
+   ========================================================================== */
+.kapla-news-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid var(--wp--preset--color--ink);
+}
+
+.kapla-news-row {
+	display: grid;
+	grid-template-columns: 7.5rem minmax(0, 1fr);
+	gap: var(--wp--preset--spacing--50);
+	padding: var(--wp--preset--spacing--50) 0;
+	border-bottom: 1px solid var(--k-line);
+}
+
+.kapla-news-date {
+	margin: 0;
+	color: var(--wp--preset--color--terracotta-deep);
+	font-family: var(--wp--preset--font-family--logo);
+	font-size: 1.125rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	line-height: 2;
+}
+
+.kapla-news-main > * {
+	margin-block: 0;
+}
+
+.kapla-news-main .wp-block-post-title a {
+	color: var(--wp--preset--color--ink);
+	text-decoration: none;
+	background: linear-gradient(currentColor, currentColor) left bottom / 0 1px no-repeat;
+	transition: background-size 0.35s var(--k-ease);
+}
+
+.kapla-news-main .wp-block-post-title a:hover {
+	background-size: 100% 1px;
+}
+
+.kapla-news-main .wp-block-post-excerpt {
+	margin-top: 0.4rem;
+	color: var(--wp--preset--color--ink-soft);
+}
+
+@media (max-width: 599px) {
+	.kapla-news-row {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.25rem;
+	}
+}
+
+.kapla-back a {
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.875rem;
+	letter-spacing: 0.1em;
+	text-decoration: none;
+}
+
+.kapla-back a:hover {
+	color: var(--wp--preset--color--ink);
+}
+
+/* ==========================================================================
+   12. 브랜드 페이지
+   ========================================================================== */
+.kapla-bp-hero.wp-block-cover {
+	min-height: min(68vh, 640px) !important;
+}
+
+.kapla-bp-hero .wp-block-cover__image-background {
+	object-position: center 72%;
+}
+
+.kapla-bp-hero h1 {
+	color: var(--wp--preset--color--paper);
+	font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+	letter-spacing: 0.12em;
+	text-shadow: 0 1px 24px rgba(30, 21, 18, 0.4);
+}
+
+.kapla-bp-hero .kapla-eyebrow {
+	color: var(--wp--preset--color--sand);
+}
+
+.kapla-bp-hero p:not(.kapla-eyebrow) {
+	color: var(--wp--preset--color--paper);
+}
+
+.kapla-bp-photo {
+	min-height: 100%;
+	background-color: var(--wp--preset--color--sunset-red);
+	background-image: url("assets/video/hero-poster.jpg");
+	background-size: cover;
+}
+
+.kapla-bp-photo--reflection {
+	background-position: 62% 78%;
+}
+
+.kapla-bp-num {
+	margin: 0 0 var(--wp--preset--spacing--30);
+	color: var(--wp--preset--color--terracotta);
+	font-family: var(--wp--preset--font-family--logo);
+	font-size: 2.5rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	line-height: 1;
+}
+
+.kapla-bp-point {
+	padding-top: var(--wp--preset--spacing--50);
+	border-top: 1px solid var(--wp--preset--color--ink);
+}
+
+.kapla-bp-point h3 {
+	margin: 0 0 var(--wp--preset--spacing--30);
+	font-size: 1.125rem;
+}
+
+.kapla-bp-point p:not(.kapla-bp-num) {
+	margin: 0;
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.9375rem;
+}
+
+/* 향 이름 카드: 향마다 배경색이 다르다 */
+.kapla-swatch {
+	min-height: 22rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: var(--wp--preset--spacing--50);
+	color: var(--wp--preset--color--ink);
+}
+
+.kapla-swatch .kapla-swatch__name {
+	margin: 0;
+	font-family: var(--wp--preset--font-family--logo);
+	font-size: 2rem;
+	font-weight: 600;
+	letter-spacing: 0.24em;
+}
+
+.kapla-swatch p {
+	margin: 0.25rem 0 0;
+	font-size: 0.875rem;
+}
+
+.kapla-swatch--salar {
+	background: linear-gradient(170deg, #f4f6f9 0%, #dde6f2 55%, #c9d6e6 100%);
+}
+
+.kapla-swatch--dusk {
+	background: linear-gradient(170deg, #f4d3b0 0%, #e59a62 50%, #8e4a3a 100%);
+	color: var(--wp--preset--color--paper);
+}
+
+.kapla-swatch--cedar {
+	background: linear-gradient(170deg, #e4e6cf 0%, #9fb284 52%, #3f5a33 100%);
+	color: var(--wp--preset--color--paper);
+}
+
+.kapla-swatch--dusk .kapla-swatch__name,
+.kapla-swatch--cedar .kapla-swatch__name,
+.kapla-swatch--dusk p,
+.kapla-swatch--cedar p {
+	color: var(--wp--preset--color--paper);
+}
+
+/* ==========================================================================
+   13. 푸터
+   ========================================================================== */
+.wp-site-blocks > footer {
+	margin-block-start: 0;
+}
+
 .kapla-footer a {
 	color: inherit;
+	text-decoration: none;
+}
+
+.kapla-footer a:hover {
+	text-decoration: underline;
+	text-underline-offset: 0.35em;
+}
+
+.kapla-footer .wp-block-site-title {
+	font-size: 1.75rem;
 }
 
 .kapla-footer__list {
-	list-style: none;
 	margin: 0;
 	padding: 0;
-	line-height: 2.2;
+	list-style: none;
+	line-height: 2.3;
 }
 
-/* 헤더·푸터 사이에 불필요한 간격이 생기지 않게 */
-.wp-site-blocks > footer {
-	margin-block-start: 0;
+.kapla-footer__list li {
+	margin: 0;
+	padding: 0;
+}
+
+/* Cormorant の数字は既定が小さな「オールドスタイル」なので、価格・日付・番号は揃った数字にする */
+.kapla-bp-num,
+.kapla-news-date,
+.kapla-swatch__name,
+.woocommerce .price,
+.woocommerce div.product p.price,
+.wc-block-components-product-price,
+.wc-block-formatted-money-amount {
+	font-variant-numeric: lining-nums;
+	font-feature-settings: "lnum" 1;
 }

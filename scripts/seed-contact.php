@@ -105,8 +105,7 @@ $form_id = $contact_form->save();
 
 $page = get_page_by_path( 'contact' );
 if ( $page ) {
-	$content  = "<!-- wp:paragraph -->\n<p>ご質問・ご相談は、下記のフォームからお送りください。2営業日以内にご返信します。</p>\n<!-- /wp:paragraph -->\n\n";
-	$content .= "<!-- wp:contact-form-7/contact-form-selector {\"id\":{$form_id},\"title\":\"{$title}\"} -->\n<div class=\"wp-block-contact-form-7-contact-form-selector\">[contact-form-7 id=\"{$form_id}\" title=\"{$title}\"]</div>\n<!-- /wp:contact-form-7/contact-form-selector -->\n\n";
+	$content  = "<!-- wp:contact-form-7/contact-form-selector {\"id\":{$form_id},\"title\":\"{$title}\"} -->\n<div class=\"wp-block-contact-form-7-contact-form-selector\">[contact-form-7 id=\"{$form_id}\" title=\"{$title}\"]</div>\n<!-- /wp:contact-form-7/contact-form-selector -->\n\n";
 	$content .= "<!-- wp:paragraph {\"textColor\":\"ink-soft\",\"fontSize\":\"small\"} -->\n<p class=\"has-ink-soft-color has-text-color has-small-font-size\">※ このサイトはデモ用です。掲載内容はすべて架空のもので、実際の販売・決済・配送は行っていません。</p>\n<!-- /wp:paragraph -->\n";
 	wp_update_post( array( 'ID' => $page->ID, 'post_content' => $content ) );
 }

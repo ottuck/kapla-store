@@ -28,3 +28,27 @@ add_action(
 		add_editor_style( 'style.css' );
 	}
 );
+
+/*
+ * ページ見出し帯の「小見出し(英字)」と「リード文」は、固定ページのカスタムフィールドで編集する。
+ * 空のときは表示されない(style.css の :empty)。テンプレートは page.html。
+ */
+add_action(
+	'init',
+	static function () {
+		// 編集画面の「カスタムフィールド」パネルから値を変えられるようにする
+		add_post_type_support( 'page', 'custom-fields' );
+		foreach ( array( 'kapla_eyebrow', 'kapla_lead' ) as $key ) {
+			register_post_meta(
+				'page',
+				$key,
+				array(
+					'type'         => 'string',
+					'single'       => true,
+					'default'      => '',
+					'show_in_rest' => true,
+				)
+			);
+		}
+	}
+);

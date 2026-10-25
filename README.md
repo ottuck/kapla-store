@@ -43,5 +43,6 @@ WP-CLI는 `.\scripts\wp.ps1 <명령>`으로 실행합니다. 상품 이미지를
 - [문의 폼과 SEO](docs/contact-seo.md)
 - [글꼴·영상·이미지 자산](docs/assets.md)
 - [상품 이미지 만들기](docs/ai-image-prompts.md)
+- [디자인 시스템(글꼴·색·구성 요소)](docs/design-system.md)
 - [화면 품질 점검 기록](docs/quality-check.md)
 - [호스팅 사전 조사](docs/hosting-reference.md)

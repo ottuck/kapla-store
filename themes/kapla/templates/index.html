@@ -1,27 +1,45 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|80","left":"var:preset|spacing|60","right":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"720px"}} -->
-<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--70);padding-right:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--80);padding-left:var(--wp--preset--spacing--60)"><!-- wp:heading {"level":1} -->
-<h1 class="wp-block-heading">お知らせ</h1>
-<!-- /wp:heading -->
+<!-- wp:group {"tagName":"main","layout":{"type":"default"}} -->
+<main class="wp-block-group"><!-- wp:group {"className":"kapla-page-head","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|60","left":"var:preset|spacing|60","right":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"760px"}} -->
+<div class="wp-block-group kapla-page-head" style="padding-top:var(--wp--preset--spacing--70);padding-right:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60);padding-left:var(--wp--preset--spacing--60)"><!-- wp:paragraph {"align":"center","className":"kapla-eyebrow"} -->
+<p class="has-text-align-center kapla-eyebrow">NEWS</p>
+<!-- /wp:paragraph -->
 
-<!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"layout":{"type":"default"}} -->
-<div class="wp-block-query"><!-- wp:post-template -->
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"}},"border":{"bottom":{"color":"var:preset|color|sand","width":"1px"}}},"layout":{"type":"default"}} -->
-<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--sand);border-bottom-width:1px;padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--50)"><!-- wp:post-date {"textColor":"ink-soft","fontSize":"small"} /-->
+<!-- wp:heading {"textAlign":"center","level":1} -->
+<h1 class="wp-block-heading has-text-align-center">お知らせ</h1>
+<!-- /wp:heading --></div>
+<!-- /wp:group -->
 
-<!-- wp:post-title {"isLink":true,"fontSize":"large"} /-->
+<!-- wp:group {"className":"kapla-page-body","style":{"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|90","left":"var:preset|spacing|60","right":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"860px"}} -->
+<div class="wp-block-group kapla-page-body" style="padding-top:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--90);padding-left:var(--wp--preset--spacing--60)"><!-- wp:query {"queryId":0,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"layout":{"type":"default"}} -->
+<div class="wp-block-query"><!-- wp:post-template {"className":"kapla-news-list"} -->
+<!-- wp:group {"className":"kapla-news-row","layout":{"type":"default"}} -->
+<div class="wp-block-group kapla-news-row"><!-- wp:post-date {"format":"Y.m.d","className":"kapla-news-date"} /-->
 
-<!-- wp:post-excerpt {"excerptLength":40} /--></div>
+<!-- wp:group {"className":"kapla-news-main","layout":{"type":"default"}} -->
+<div class="wp-block-group kapla-news-main"><!-- wp:post-title {"isLink":true,"level":2,"fontSize":"medium"} /-->
+
+<!-- wp:post-excerpt {"excerptLength":40,"fontSize":"small"} /--></div>
+<!-- /wp:group --></div>
 <!-- /wp:group -->
 <!-- /wp:post-template -->
 
+<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+<!-- wp:query-pagination-previous /-->
+
+<!-- wp:query-pagination-numbers /-->
+
+<!-- wp:query-pagination-next /-->
+<!-- /wp:query-pagination -->
+
 <!-- wp:query-no-results -->
-<!-- wp:paragraph -->
-<p>現在お知らせはありません。</p>
+<!-- wp:paragraph {"align":"center"} -->
+<p class="has-text-align-center">現在お知らせはありません。</p>
 <!-- /wp:paragraph -->
 <!-- /wp:query-no-results --></div>
-<!-- /wp:query --></main>
+<!-- /wp:query --></div>
+<!-- /wp:group --></main>
 <!-- /wp:group -->
 
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
