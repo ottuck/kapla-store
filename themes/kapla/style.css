@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.4.10
+Version: 0.4.12
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -970,7 +970,14 @@ input[type="radio"] {
 	padding-top: 1rem;
 }
 
-.wp-block-woocommerce-product-collection .wc-block-components-product-button__button {
+.wp-block-woocommerce-product-collection .wp-block-button.wc-block-components-product-button {
+	display: block;
+	width: 100%;
+}
+
+/* WooCommerce가 border-style: none 을 더 구체적으로 걸기 때문에 선택자를 맞춘다 */
+.wp-block-woocommerce-product-collection .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button {
+	border-style: solid;
 	width: 100%;
 	padding: 0.7rem 1.25rem;
 	border: 1px solid var(--wp--preset--color--ink);
@@ -980,7 +987,7 @@ input[type="radio"] {
 	letter-spacing: 0.14em;
 }
 
-.wp-block-woocommerce-product-collection .wc-block-components-product-button__button:hover {
+.wp-block-woocommerce-product-collection .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button:hover {
 	background: var(--wp--preset--color--ink);
 	color: var(--wp--preset--color--paper);
 }

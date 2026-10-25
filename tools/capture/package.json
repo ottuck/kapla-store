@@ -1,0 +1,8 @@
+{
+  "name": "kapla-capture",
+  "private": true,
+  "type": "module",
+  "description": "ポートフォリオ用の画面キャプチャ(Chrome を操作して docs/portfolio/screenshots に保存する)",
+  "scripts": { "capture": "node capture.mjs" },
+  "dependencies": { "puppeteer-core": "^24.0.0" }
+}

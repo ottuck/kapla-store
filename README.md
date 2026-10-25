@@ -9,7 +9,8 @@ themes/kapla/              블록 테마 (theme.json, 템플릿, 패턴, 글꼴,
 plugins/kapla-shop-tweaks/ 송료·결제 표시·스팸 방지 등 작은 보정 플러그인
 scripts/                   WP-CLI 래퍼, 시드(페이지·상품·배송·문의폼·SEO), 자산 생성 스크립트
 seed/images/               상품 이미지(AI로 만든 사진 12종)
-docs/                      설계·결정·점검 기록
+docs/                      설계·결정·점검 기록, 포트폴리오 소개문과 화면 캡처(docs/portfolio/)
+tools/capture/             화면 캡처 스크립트(Chrome을 조작해 docs/portfolio/screenshots 에 저장)
 ```
 
 ## 로컬 실행
@@ -46,3 +47,8 @@ WP-CLI는 `.\scripts\wp.ps1 <명령>`으로 실행합니다. 상품 이미지를
 - [디자인 시스템(글꼴·색·구성 요소)](docs/design-system.md)
 - [화면 품질 점검 기록](docs/quality-check.md)
 - [호스팅 사전 조사](docs/hosting-reference.md)
+
+## 포트폴리오용 자료
+
+- [고객용 일본어 소개문](docs/portfolio/kapla-intro-ja.md)
+- 화면 캡처(PC·스마트폰 15장): `docs/portfolio/screenshots/`. 다시 찍으려면 `cd tools/capture && npm install && npm run capture` (Chrome 필요, 로컬 `kapla.local`을 촬영합니다)
