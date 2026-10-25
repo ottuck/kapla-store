@@ -1,0 +1,21 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# secrets and local environment
+.env
+*.local.json
+wp-config.php
+
+# WordPress core, uploads and caches (not versioned; reproduce with scripts/ and seed/)
+/wordpress/
+wp-content/uploads/
+wp-content/cache/
+*.log
+
+# build output
+node_modules/
+dist/
+*.zip
