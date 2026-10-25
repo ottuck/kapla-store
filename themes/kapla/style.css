@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.4.5
+Version: 0.4.6
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -854,11 +854,10 @@ input[type="radio"] {
 	text-align: left;
 }
 
+/* 담은 뒤의 「お買い物カゴを表示」 링크는 쓰지 않는다. 헤더의 미니 카트가 열리며 대신한다 */
+.wp-block-woocommerce-product-collection .wc-block-components-product-button > span[data-wp-bind--hidden],
 .wp-block-woocommerce-product-collection .added_to_cart {
-	display: block;
-	margin-top: 0.6rem;
-	font-size: 0.8125rem;
-	text-align: center;
+	display: none !important;
 }
 
 /* 메인의 추천 상품(블록): 샵 목록과 같은 가는 테두리 버튼, 버튼 높이를 맞춘다 */

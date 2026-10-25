@@ -22,6 +22,22 @@ add_action(
 // WooCommerce のクラシックテンプレート用ブロックが同じフィルターで true を返すため、優先度を遅らせて最後に false にする。
 add_filter( 'woocommerce_single_product_zoom_enabled', '__return_false', 999 );
 
+// 商品一覧のカートボタン: すでにカートに入っているときの表示を「お買い物カゴ内の1」から「追加済み(1点)」に変える。
+// 文言は WooCommerce が data-wp-context(JSON)に入れており、### が個数に置き換わる。
+add_filter(
+	'render_block_woocommerce/product-button',
+	static function ( $html ) {
+		$text = substr( wp_json_encode( '追加済み（###点）' ), 1, -1 );
+		return preg_replace_callback(
+			'/(inTheCartText(?:&quot;|")\s*:\s*(?:&quot;|"))(.*?)(?=&quot;|")/u',
+			static function ( $m ) use ( $text ) {
+				return $m[1] . $text;
+			},
+			$html
+		);
+	}
+);
+
 add_action(
 	'after_setup_theme',
 	static function () {
