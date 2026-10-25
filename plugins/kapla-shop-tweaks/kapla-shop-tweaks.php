@@ -10,6 +10,20 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * お問い合わせフォームのハニーポット: 人には見えない入力欄(kp_website)が埋まっていたらスパムとみなす。
+ */
+add_filter(
+	'wpcf7_spam',
+	static function ( bool $spam ): bool {
+		if ( $spam ) {
+			return $spam;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Contact Form 7 側で処理済みのリクエストを判定するだけ。
+		return ! empty( $_POST['kp_website'] );
+	}
+);
+
+/**
  * Stripe プラグインに日本語訳が無いカード決済の名称を日本語にする。
  */
 add_filter(

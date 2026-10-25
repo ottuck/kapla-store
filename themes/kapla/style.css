@@ -59,6 +59,42 @@ Text Domain: kapla
 	text-decoration: underline;
 }
 
+/* 문의 폼의 스팸 방지용 숨김 입력란(사람에게는 보이지 않는다) */
+.kapla-hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* Contact Form 7 입력란 */
+.wpcf7 input[type="text"],
+.wpcf7 input[type="email"],
+.wpcf7 select,
+.wpcf7 textarea {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--wp--preset--color--sand);
+	background: var(--wp--preset--color--paper);
+	font: inherit;
+	color: inherit;
+}
+
+.wpcf7 input[type="submit"] {
+	padding: 0.9rem 2.25rem;
+	border: 0;
+	background: var(--wp--preset--color--terracotta-deep);
+	color: var(--wp--preset--color--paper);
+	font: inherit;
+	letter-spacing: 0.12em;
+	cursor: pointer;
+}
+
+.wpcf7 input[type="submit"]:hover {
+	background: var(--wp--preset--color--ink);
+}
+
 /* 키보드 포커스 표시 */
 :where(a, button, input, select, textarea):focus-visible {
 	outline: 2px solid var(--wp--preset--color--terracotta-deep);
