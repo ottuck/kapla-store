@@ -1,4 +1,207 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/theme.json",
-	"version": 3
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"layout": {
+			"contentSize": "1080px",
+			"wideSize": "1320px"
+		},
+		"color": {
+			"custom": false,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"defaultDuotone": false,
+			"palette": [
+				{ "slug": "cream", "name": "クリーム", "color": "#F4EEE4" },
+				{ "slug": "paper", "name": "ペーパー", "color": "#FBF8F2" },
+				{ "slug": "sand", "name": "サンド", "color": "#E6DCCB" },
+				{ "slug": "ink", "name": "インク", "color": "#2B211B" },
+				{ "slug": "ink-soft", "name": "インク(淡)", "color": "#6B5A4D" },
+				{ "slug": "terracotta", "name": "テラコッタ", "color": "#B07650" },
+				{ "slug": "terracotta-deep", "name": "テラコッタ(濃)", "color": "#8A5636" },
+				{ "slug": "sunset-red", "name": "サンセットレッド", "color": "#8E2F3A" },
+				{ "slug": "night", "name": "ナイト", "color": "#1E1512" }
+			]
+		},
+		"typography": {
+			"fluid": true,
+			"customFontSize": false,
+			"defaultFontSizes": false,
+			"fontFamilies": [
+				{
+					"slug": "sans",
+					"name": "ゴシック",
+					"fontFamily": "\"Noto Sans JP\", \"Hiragino Sans\", \"Yu Gothic\", \"Meiryo\", sans-serif"
+				},
+				{
+					"slug": "serif",
+					"name": "明朝",
+					"fontFamily": "\"Shippori Mincho\", \"Hiragino Mincho ProN\", \"Yu Mincho\", \"MS PMincho\", serif"
+				},
+				{
+					"slug": "script",
+					"name": "ロゴ(筆記体)",
+					"fontFamily": "Lobster, \"Brush Script MT\", cursive"
+				}
+			],
+			"fontSizes": [
+				{ "slug": "small", "name": "小", "size": "0.8125rem" },
+				{ "slug": "base", "name": "標準", "size": "1rem" },
+				{ "slug": "medium", "name": "中", "size": "1.125rem" },
+				{ "slug": "large", "name": "大", "size": "1.5rem", "fluid": { "min": "1.25rem", "max": "1.5rem" } },
+				{ "slug": "x-large", "name": "特大", "size": "2rem", "fluid": { "min": "1.5rem", "max": "2rem" } },
+				{ "slug": "xx-large", "name": "超特大", "size": "3rem", "fluid": { "min": "2rem", "max": "3rem" } },
+				{ "slug": "display", "name": "ディスプレイ", "size": "4.5rem", "fluid": { "min": "2.5rem", "max": "4.5rem" } }
+			]
+		},
+		"spacing": {
+			"units": ["px", "em", "rem", "%", "vw", "vh"],
+			"spacingScale": { "steps": 0 },
+			"spacingSizes": [
+				{ "slug": "20", "name": "XS", "size": "0.5rem" },
+				{ "slug": "30", "name": "S", "size": "0.75rem" },
+				{ "slug": "40", "name": "M", "size": "1rem" },
+				{ "slug": "50", "name": "L", "size": "1.5rem" },
+				{ "slug": "60", "name": "XL", "size": "2.5rem", "fluid": { "min": "1.5rem", "max": "2.5rem" } },
+				{ "slug": "70", "name": "2XL", "size": "4rem", "fluid": { "min": "2.5rem", "max": "4rem" } },
+				{ "slug": "80", "name": "3XL", "size": "6rem", "fluid": { "min": "3.5rem", "max": "6rem" } },
+				{ "slug": "90", "name": "4XL", "size": "8rem", "fluid": { "min": "5rem", "max": "8rem" } }
+			]
+		},
+		"shadow": {
+			"defaultPresets": false
+		},
+		"custom": {
+			"letterSpacing": {
+				"wide": "0.12em",
+				"heading": "0.04em"
+			}
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--cream)",
+			"text": "var(--wp--preset--color--ink)"
+		},
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"fontSize": "var(--wp--preset--font-size--base)",
+			"lineHeight": "1.9"
+		},
+		"spacing": {
+			"blockGap": "var(--wp--preset--spacing--50)"
+		},
+		"elements": {
+			"link": {
+				"color": { "text": "var(--wp--preset--color--terracotta-deep)" },
+				":hover": {
+					"color": { "text": "var(--wp--preset--color--ink)" }
+				},
+				"typography": { "textDecoration": "underline" }
+			},
+			"heading": {
+				"color": { "text": "var(--wp--preset--color--ink)" },
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--serif)",
+					"fontWeight": "500",
+					"lineHeight": "1.45",
+					"letterSpacing": "var(--wp--custom--letter-spacing--heading)"
+				}
+			},
+			"h1": { "typography": { "fontSize": "var(--wp--preset--font-size--xx-large)" } },
+			"h2": { "typography": { "fontSize": "var(--wp--preset--font-size--x-large)" } },
+			"h3": { "typography": { "fontSize": "var(--wp--preset--font-size--large)" } },
+			"h4": { "typography": { "fontSize": "var(--wp--preset--font-size--medium)" } },
+			"button": {
+				"color": {
+					"background": "var(--wp--preset--color--terracotta-deep)",
+					"text": "var(--wp--preset--color--paper)"
+				},
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--small)",
+					"letterSpacing": "var(--wp--custom--letter-spacing--wide)",
+					"textDecoration": "none"
+				},
+				"border": { "radius": "0" },
+				"spacing": {
+					"padding": {
+						"top": "0.9rem",
+						"bottom": "0.9rem",
+						"left": "2.25rem",
+						"right": "2.25rem"
+					}
+				},
+				":hover": {
+					"color": {
+						"background": "var(--wp--preset--color--ink)",
+						"text": "var(--wp--preset--color--paper)"
+					}
+				}
+			}
+		},
+		"blocks": {
+			"core/button": {
+				"variations": {
+					"outline": {
+						"border": {
+							"width": "1px",
+							"style": "solid",
+							"color": "currentColor"
+						},
+						"color": {
+							"background": "transparent",
+							"text": "currentColor"
+						},
+						":hover": {
+							"color": {
+								"background": "var(--wp--preset--color--ink)",
+								"text": "var(--wp--preset--color--paper)"
+							}
+						}
+					}
+				}
+			},
+			"core/site-title": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--script)",
+					"fontSize": "var(--wp--preset--font-size--x-large)",
+					"fontWeight": "400",
+					"letterSpacing": "0"
+				},
+				"elements": {
+					"link": {
+						"typography": { "textDecoration": "none" },
+						"color": { "text": "currentColor" }
+					}
+				}
+			},
+			"core/navigation": {
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--small)",
+					"letterSpacing": "var(--wp--custom--letter-spacing--wide)"
+				},
+				"elements": {
+					"link": {
+						"typography": { "textDecoration": "none" },
+						"color": { "text": "currentColor" }
+					}
+				}
+			},
+			"core/separator": {
+				"color": { "text": "var(--wp--preset--color--sand)" }
+			},
+			"core/post-title": {
+				"typography": { "fontFamily": "var(--wp--preset--font-family--serif)" }
+			},
+			"core/paragraph": {
+				"typography": { "lineHeight": "2" }
+			}
+		}
+	},
+	"templateParts": [
+		{ "name": "header", "title": "ヘッダー", "area": "header" },
+		{ "name": "footer", "title": "フッター", "area": "footer" }
+	]
 }

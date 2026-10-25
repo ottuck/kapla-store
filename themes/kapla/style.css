@@ -1,8 +1,92 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.1.0
+Version: 0.2.0
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
 */
+
+/* 헤더: 메인 페이지에서는 영상 위에 겹쳐 흰 글씨로 표시한다 */
+.kapla-header {
+	position: relative;
+	z-index: 10;
+}
+
+.home .kapla-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	color: var(--wp--preset--color--paper);
+}
+
+.home .kapla-header a {
+	color: var(--wp--preset--color--paper);
+}
+
+.admin-bar.home .kapla-header {
+	top: var(--wp-admin--admin-bar--height, 32px);
+}
+
+/* 히어로: 영상 위 글씨가 잘 읽히도록 */
+.kapla-hero .wp-block-cover__inner-container {
+	padding-bottom: var(--wp--preset--spacing--70);
+}
+
+.kapla-hero h1 {
+	color: var(--wp--preset--color--paper);
+	text-shadow: 0 1px 24px rgba(30, 21, 18, 0.35);
+}
+
+/* 모션을 줄이는 설정을 쓰는 사용자에게는 영상을 멈춘다 */
+@media (prefers-reduced-motion: reduce) {
+	.kapla-hero video {
+		display: none;
+	}
+
+	.kapla-hero {
+		background-color: var(--wp--preset--color--sunset-red);
+	}
+}
+
+/* 푸터 링크는 밑줄 없이, 호버 시 밑줄 */
+.kapla-footer a {
+	text-decoration: none;
+}
+
+.kapla-footer a:hover {
+	text-decoration: underline;
+}
+
+/* 키보드 포커스 표시 */
+:where(a, button, input, select, textarea):focus-visible {
+	outline: 2px solid var(--wp--preset--color--terracotta-deep);
+	outline-offset: 3px;
+}
+
+/* 헤더 좌우 영역을 같은 폭으로 두어 로고를 가운데에 맞춘다 */
+.kapla-header__side {
+	flex: 1 1 0;
+}
+
+.kapla-header__side .wp-block-navigation {
+	gap: var(--wp--preset--spacing--50);
+}
+
+/* 푸터 */
+.kapla-footer a {
+	color: inherit;
+}
+
+.kapla-footer__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	line-height: 2.2;
+}
+
+/* 헤더·푸터 사이에 불필요한 간격이 생기지 않게 */
+.wp-site-blocks > footer {
+	margin-block-start: 0;
+}
