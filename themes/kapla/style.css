@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.3.5
+Version: 0.3.8
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -190,7 +190,18 @@ body:not(.home) .kapla-header {
 	background-size: cover;
 }
 
-.kapla-hero .wp-block-cover__inner-container {
+/* 문구의 왼쪽 끝을 헤더 메뉴(wide 1320px + 좌우 2.5rem)와 같은 선에 맞춘다 */
+.kapla-hero.wp-block-cover {
+	padding-inline: 0;
+}
+
+/* 코어의 .has-custom-content-position 규칙(width:unset, margin:0)을 이기도록 선택자를 구체적으로 쓴다 */
+.kapla-hero.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-bottom-left .wp-block-cover__inner-container {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: calc(1320px + 2 * var(--wp--preset--spacing--60));
+	margin-inline: auto;
+	padding-inline: var(--wp--preset--spacing--60);
 	padding-bottom: var(--wp--preset--spacing--70);
 }
 
