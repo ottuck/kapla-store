@@ -104,6 +104,6 @@ Spring Boot + JSP + MyBatis + Oracle. 주요 화면은 `main`, `brand`, `event`,
 - WordPress는 MySQL/MariaDB만 공식 지원하므로 기존 Postgres를 쓰지 않고 MariaDB를 별도로 둔다
 - Playground는 WooCommerce 실행 시점 설치 시 첫 로딩이 30~60초일 수 있어(공식 문서), 빌드에 포함하는 방식과 Cloudflare Pages 파일 크기 제한(파일당 25MiB로 알고 있음)을 확인해야 한다
 - 작업 방식: Claude가 구현하고 사용자는 결과물과 관리자 화면을 확인
-- 디자인 방향: **A. Warm Editorial** 확정 (크림 바탕, 테라코타 포인트, 세리프 제목, 원본 영상 히어로, Lobster 계열 필기체 Kapla 로고). 브랜드명은 영문 Kapla, 상품 이미지는 사용자가 AI로 생성
+- 디자인 방향: **A. Warm Editorial** 확정 (크림 바탕, 테라코타 포인트, 세리프 제목, 원본 영상 히어로, Kapla 로고는 처음에 Lobster 필기체였으나 2026-10-26에 Cormorant Garamond 대문자 로고타입으로 변경). 브랜드명은 영문 Kapla, 상품 이미지는 사용자가 AI로 생성
 - 히어로 영상 원본 위치: 팀 소스 저장소 `EmperorBug/globalinFinal`(공개)의 `src/main/resources/static/img/mainVideo.mp4` (약 7.1MB). Notion Main page의 JSP 코드가 `<video src="/img/mainVideo.mp4" autoplay loop muted>`로 참조한다. 사용자 소유 저장소 `ottuck/GlobalIN_team4_KaplaProject`는 현재 문서 저장소(`kapla-project-doc`)로 이름이 바뀐 상태이며 영상은 없다
 - 영상 사본: `assets/source/mainVideo.mp4` (2026-10-26 내려받음, 6.81MB, 1920×1080, 21.8초, 오디오 트랙 포함, SHA-256 `BEBF88208CA2451B4D4D44EC27562F6FEDF1681ACC5B75C0C683F7B4A3EDAF0C`). 원본 보존용이며 **Git에는 올리지 않는다**(`.gitignore`). 사이트에 쓰는 가공본은 테마 폴더에 따로 만든다. 촬영·제공 출처와 라이선스는 사용자가 확인하는 대로 이 문서에 추가한다

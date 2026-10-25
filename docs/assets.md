@@ -7,10 +7,11 @@
 | 용도 | 글꼴 | 방식 | 크기 |
 |---|---|---|---|
 | 제목 | Shippori Mincho Medium (500) | 웹 글꼴(자체 호스팅), 일본어 서브셋 | 약 690KB |
-| 로고 `Kapla` | Lobster (400) | 웹 글꼴(자체 호스팅), 영문만 | 약 33KB |
+| 로고 `KAPLA` | Cormorant Garamond SemiBold (600) | 웹 글꼴(자체 호스팅), 영문만. 대문자 + 자간 0.3em은 CSS로 처리(사이트 이름은 `Kapla` 그대로) | 약 35KB |
+| 메뉴 | Shippori Mincho Medium | 제목과 같은 글꼴, 16px, 자간 0.14em | 0 (추가 없음) |
 | 본문 | OS 기본 고딕 (Hiragino Sans, Yu Gothic UI, Meiryo, Noto Sans CJK JP 순) | 시스템 글꼴 | 0 |
 
-- 두 웹 글꼴 모두 SIL Open Font License(OFL). 라이선스 파일은 `themes/kapla/assets/fonts/OFL-*.txt`. 출처는 `google/fonts` 저장소.
+- 웹 글꼴은 모두 SIL Open Font License(OFL). 라이선스 파일은 `themes/kapla/assets/fonts/OFL-*.txt`. 출처는 `google/fonts` 저장소.
 - 일본어 글꼴은 한자 때문에 무겁기 때문에, 제목에만 쓰고 본문은 OS 고딕으로 둔다. 모든 글꼴은 `font-display: swap`이라 로딩 전에는 OS 글꼴로 먼저 보인다.
 - 서브셋 범위: ASCII, 라틴 보조, 기호, 히라가나, 가타카나, 전각 기호, JIS X 0208 **제1수준 한자**(약 2,960자). 범위 밖 글자는 OS 명조로 표시된다. 사이트 본문·상품명에 쓰인 한자 309자는 모두 포함됨을 확인했다.
 - 다시 만들기: `python scripts/build-fonts.py <원본 폴더> themes/kapla/assets/fonts` (fonttools, brotli 필요).

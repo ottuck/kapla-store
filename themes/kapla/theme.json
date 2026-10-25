@@ -50,16 +50,16 @@
 					]
 				},
 				{
-					"slug": "script",
-					"name": "ロゴ(筆記体)",
-					"fontFamily": "Lobster, \"Brush Script MT\", cursive",
+					"slug": "logo",
+					"name": "ロゴ(Cormorant Garamond)",
+					"fontFamily": "\"Cormorant Garamond\", Georgia, \"Times New Roman\", serif",
 					"fontFace": [
 						{
-							"fontFamily": "Lobster",
-							"fontWeight": "400",
+							"fontFamily": "Cormorant Garamond",
+							"fontWeight": "600",
 							"fontStyle": "normal",
 							"fontDisplay": "swap",
-							"src": [ "file:./assets/fonts/Lobster-Regular.woff2" ]
+							"src": [ "file:./assets/fonts/CormorantGaramond-SemiBold.woff2" ]
 						}
 					]
 				}
@@ -183,10 +183,11 @@
 			},
 			"core/site-title": {
 				"typography": {
-					"fontFamily": "var(--wp--preset--font-family--script)",
-					"fontSize": "var(--wp--preset--font-size--x-large)",
-					"fontWeight": "400",
-					"letterSpacing": "0"
+					"fontFamily": "var(--wp--preset--font-family--logo)",
+					"fontSize": "clamp(1.5rem, 1.2rem + 1.2vw, 2.5rem)",
+					"fontWeight": "600",
+					"letterSpacing": "0.3em",
+					"textTransform": "uppercase"
 				},
 				"elements": {
 					"link": {
@@ -197,8 +198,9 @@
 			},
 			"core/navigation": {
 				"typography": {
-					"fontSize": "var(--wp--preset--font-size--small)",
-					"letterSpacing": "var(--wp--custom--letter-spacing--wide)"
+					"fontFamily": "var(--wp--preset--font-family--serif)",
+					"fontSize": "var(--wp--preset--font-size--base)",
+					"letterSpacing": "0.14em"
 				},
 				"elements": {
 					"link": {

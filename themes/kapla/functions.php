@@ -18,6 +18,10 @@ add_action(
 	}
 );
 
+// 商品画像のマウスオーバー拡大(ズーム)は使わない。
+// WooCommerce のクラシックテンプレート用ブロックが同じフィルターで true を返すため、優先度を遅らせて最後に false にする。
+add_filter( 'woocommerce_single_product_zoom_enabled', '__return_false', 999 );
+
 add_action(
 	'after_setup_theme',
 	static function () {

@@ -3,7 +3,7 @@
 使い方 (fonttools と brotli が入った Python で):
     python scripts/build-fonts.py <元フォントの置き場> <出力先 themes/kapla/assets/fonts>
 
-元フォント: Lobster-Regular.ttf, ShipporiMincho-Medium.ttf (どちらも SIL OFL, google/fonts)
+元フォント: CormorantGaramond[wght].ttf (wght 600 に固定して使う), ShipporiMincho-Medium.ttf (どちらも SIL OFL, google/fonts)
 収録文字: ASCII・ラテン補助・記号・ひらがな・カタカナ・全角記号・JIS X 0208 第1水準の漢字(約2,960字)。
 収録外の文字はブラウザが次のフォント(OS の明朝/ゴシック)で表示する。
 """
@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 
 from fontTools import subset
+from fontTools.ttLib import TTFont
+from fontTools.varLib import instancer
 
 
 def jis_x_0208_kanji() -> list[int]:
@@ -60,7 +62,11 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # ロゴ(英字のみ)
-    build(src_dir / "Lobster-Regular.ttf", out_dir / "Lobster-Regular.woff2", list(range(0x20, 0x7F)) + list(range(0xA0, 0x100)))
+    # 可変フォントの太さを 600 に固定してからサブセット化する
+    instanced = out_dir / "_CormorantGaramond-600.ttf"
+    instancer.instantiateVariableFont(TTFont(str(src_dir / "CormorantGaramond[wght].ttf")), {"wght": 600}).save(str(instanced))
+    build(instanced, out_dir / "CormorantGaramond-SemiBold.woff2", list(range(0x20, 0x7F)) + list(range(0xA0, 0x100)))
+    instanced.unlink()
     # 見出し(明朝 Medium)
     build(src_dir / "ShipporiMincho-Medium.ttf", out_dir / "ShipporiMincho-Medium.woff2", COMMON + jis_x_0208_kanji())
 

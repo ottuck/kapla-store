@@ -135,7 +135,8 @@ Text Domain: kapla
 	}
 
 	.kapla-header .wp-block-site-title {
-		font-size: var(--wp--preset--font-size--large);
+		font-size: 1.5rem;
+		letter-spacing: 0.24em;
 	}
 }
 
