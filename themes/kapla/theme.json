@@ -32,18 +32,36 @@
 			"fontFamilies": [
 				{
 					"slug": "sans",
-					"name": "ゴシック",
-					"fontFamily": "\"Noto Sans JP\", \"Hiragino Sans\", \"Yu Gothic\", \"Meiryo\", sans-serif"
+					"name": "ゴシック(OS標準)",
+					"fontFamily": "\"Hiragino Sans\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic UI\", \"Yu Gothic\", \"Meiryo\", \"Noto Sans CJK JP\", sans-serif"
 				},
 				{
 					"slug": "serif",
-					"name": "明朝",
-					"fontFamily": "\"Shippori Mincho\", \"Hiragino Mincho ProN\", \"Yu Mincho\", \"MS PMincho\", serif"
+					"name": "明朝(見出し)",
+					"fontFamily": "\"Shippori Mincho\", \"Hiragino Mincho ProN\", \"Yu Mincho\", \"MS PMincho\", serif",
+					"fontFace": [
+						{
+							"fontFamily": "Shippori Mincho",
+							"fontWeight": "500",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/ShipporiMincho-Medium.woff2" ]
+						}
+					]
 				},
 				{
 					"slug": "script",
 					"name": "ロゴ(筆記体)",
-					"fontFamily": "Lobster, \"Brush Script MT\", cursive"
+					"fontFamily": "Lobster, \"Brush Script MT\", cursive",
+					"fontFace": [
+						{
+							"fontFamily": "Lobster",
+							"fontWeight": "400",
+							"fontStyle": "normal",
+							"fontDisplay": "swap",
+							"src": [ "file:./assets/fonts/Lobster-Regular.woff2" ]
+						}
+					]
 				}
 			],
 			"fontSizes": [
