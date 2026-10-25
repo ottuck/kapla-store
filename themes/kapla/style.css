@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.3.0
+Version: 0.3.5
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -84,11 +84,6 @@ body:not(.home) .kapla-header {
 	color: var(--wp--preset--color--paper);
 }
 
-/* 영상 위 헤더의 장바구니 개수 배지 */
-.home .kapla-header .wc-block-mini-cart__badge {
-	color: var(--wp--preset--color--ink);
-}
-
 .admin-bar.home .kapla-header {
 	top: var(--wp-admin--admin-bar--height, 32px);
 }
@@ -126,20 +121,49 @@ body:not(.home) .kapla-header {
 	transform: scaleX(1);
 }
 
-/* 모바일: 오른쪽 메뉴(お知らせ·店舗)는 숨기고, 왼쪽 햄버거 메뉴 안에서 보여 준다 */
-.kapla-nav-mobile-only {
-	display: none;
+/* 왼쪽은 글자 메뉴만, 오른쪽은 아이콘(계정·장바구니)만 둔다. 개수 배지는 아이콘 오른쪽 위에 붙인다 */
+.kapla-header__side:last-child {
+	gap: 0.5rem;
 }
 
-.wp-block-navigation__responsive-container.is-menu-open .kapla-nav-mobile-only {
-	display: block;
+.kapla-header .wp-block-woocommerce-customer-account a,
+.kapla-header .wc-block-mini-cart__button {
+	color: inherit;
 }
 
-@media (max-width: 599px) {
-	.kapla-header__sub {
+/* 배지 색은 WooCommerce JS가 style 속성으로 넣기 때문에 !important가 필요하다 */
+.kapla-header .wc-block-mini-cart__button .wc-block-mini-cart__badge {
+	position: absolute;
+	top: -0.4rem;
+	right: -0.5rem;
+	left: auto;
+	min-width: 1.0625rem;
+	height: 1.0625rem;
+	margin: 0;
+	padding: 0 0.3rem;
+	border-radius: 999px;
+	transform: none;
+	background-color: var(--wp--preset--color--terracotta-deep) !important;
+	color: var(--wp--preset--color--paper) !important;
+	font-family: var(--wp--preset--font-family--sans);
+	font-size: 0.6875rem;
+	font-weight: 500;
+	line-height: 1;
+	letter-spacing: 0;
+}
+
+/* 600〜899px: 글자 메뉴 4개가 줄바꿈되므로 햄버거 메뉴로 바꾼다(코어 기준은 600px) */
+@media (min-width: 600px) and (max-width: 899px) {
+	.kapla-header .wp-block-navigation__responsive-container:not(.is-menu-open) {
 		display: none;
 	}
 
+	.kapla-header .wp-block-navigation__responsive-container-open:not(.always-shown) {
+		display: flex;
+	}
+}
+
+@media (max-width: 599px) {
 	.kapla-header .wp-block-site-title {
 		font-size: 1.5rem;
 		letter-spacing: 0.24em;
@@ -945,28 +969,33 @@ body.woocommerce ul.products li.product .button {
 	letter-spacing: 0.08em;
 }
 
+/* 수량 입력과 카트 버튼: 같은 높이(2.75rem)로 낮게. WooCommerce의 legacy-template 규칙이 padding을 덮어쓰므로 선택자를 구체적으로 쓴다 */
 .woocommerce div.product form.cart {
 	display: flex;
 	gap: 0.75rem;
 	align-items: stretch;
+	max-width: 26rem;
 	margin: 0 0 var(--wp--preset--spacing--50);
 }
 
-.woocommerce div.product form.cart .quantity {
+.woocommerce div.product form.cart div.quantity {
 	margin: 0;
 }
 
-.woocommerce .quantity .qty {
-	width: 4.5rem;
-	height: 3.25rem;
+.woocommerce div.product form.cart div.quantity .input-text.qty {
+	box-sizing: border-box;
+	width: 4rem;
+	height: 2.75rem;
 	padding: 0;
 	text-align: center;
 }
 
 .woocommerce div.product form.cart .single_add_to_cart_button {
 	flex: 1;
+	box-sizing: border-box;
+	height: 2.75rem;
 	margin: 0;
-	padding-block: 0;
+	padding: 0 1.5rem;
 	white-space: nowrap;
 }
 
@@ -976,8 +1005,8 @@ body.woocommerce ul.products li.product .button {
 		letter-spacing: 0.08em;
 	}
 
-	.woocommerce .quantity .qty {
-		width: 3.75rem;
+	.woocommerce div.product form.cart div.quantity .input-text.qty {
+		width: 3.5rem;
 	}
 }
 
@@ -1171,16 +1200,24 @@ body.woocommerce ul.products li.product .button {
 .woocommerce-account .woocommerce > h2,
 .woocommerce-account .u-column1 > h2,
 .woocommerce-account .u-column2 > h2 {
-	margin: 0 0 var(--wp--preset--spacing--40);
+	margin: 0 auto var(--wp--preset--spacing--40);
 	font-size: 1.25rem;
 	letter-spacing: 0.1em;
+}
+
+/* 로그아웃 상태의 로그인 카드는 가운데에 둔다(로그인 후 2단 레이아웃의 제목은 왼쪽 그대로) */
+.woocommerce-account:not(.logged-in) .woocommerce > h2,
+.woocommerce-account:not(.logged-in) .u-column1 > h2,
+.woocommerce-account:not(.logged-in) .u-column2 > h2 {
+	max-width: 30rem;
+	text-align: center;
 }
 
 .woocommerce-account form.login,
 .woocommerce-account form.register,
 .woocommerce-account form.lost_reset_password {
 	max-width: 30rem;
-	margin: 0;
+	margin: 0 auto;
 	padding: var(--wp--preset--spacing--60);
 	border: 1px solid var(--k-line);
 	border-radius: 0;
@@ -1334,8 +1371,29 @@ body.woocommerce ul.products li.product .button {
 	letter-spacing: 0.04em;
 }
 
+/* 카트·결제·미니 카트의 버튼도 같은 크기감으로 낮게 */
 .wc-block-components-button:not(.is-link) {
-	min-height: 3.25rem;
+	box-sizing: border-box;
+	min-height: 2.75rem;
+	padding: 0.5rem 1.25rem;
+	font-size: 0.8125rem;
+	letter-spacing: 0.12em;
+}
+
+.wc-block-components-button:not(.is-link) .wc-block-components-button__text {
+	line-height: 1.4;
+}
+
+/* 「お買い物カゴを表示」など枠線ボタンは 1px の細い線にする */
+.wc-block-components-button.is-style-outline:not(.is-link) {
+	border: 1px solid var(--wp--preset--color--ink);
+	background: transparent;
+	color: var(--wp--preset--color--ink);
+}
+
+.wc-block-components-button.is-style-outline:not(.is-link):hover {
+	background: var(--wp--preset--color--ink);
+	color: var(--wp--preset--color--paper);
 }
 
 /* ==========================================================================
