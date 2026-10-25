@@ -34,8 +34,9 @@
 - **표**: 줄무늬 없이 위아래 굵은 선과 가는 구분선(특정상거래법, 店舗). 모바일에서는 세로로 쌓인다.
 - **아코디언**: 자주 묻는 질문. `core/details` 블록 + 오른쪽 +/− 표시.
 - **헤더**: 메뉴에 마우스를 올리면 밑줄이 왼쪽에서 그려진다. 메인에서는 영상 위에 투명하게 겹친다.
-- **상품 카드**: 4:5 이미지, 명조 상품명, Cormorant 가격. 4열 → 3열(1023px 이하) → 2열(719px 이하).
+- **상품 카드**: 4:5 이미지, 명조 상품명, Cormorant 가격. 4열 → 3열(1023px 이하) → 2열(719px 이하). 샵 목록·메인 추천·관련 상품이 모두 `woocommerce/product-collection` 블록이라 같은 CSS를 쓴다.
 - **상품 상세**: 2단(이미지 | 정보), 모바일에서 1단. 확대(줌)와 돋보기 버튼은 쓰지 않는다. 탭은 밑줄만.
+- **안내 배너**: 클래식(`.woocommerce-message`)과 블록(`.wc-block-components-notice-banner`) 모두 가는 테두리와 왼쪽 테라코타 선.
 
 ## 페이지 머리말 (영문 라벨과 리드문)
 
@@ -52,7 +53,10 @@
 
 ## 알아 둘 것
 
+- **상품 상세·상품 목록은 블록 템플릿**이다(`templates/single-product.html`, `archive-product.html`; 예전의 `woocommerce/legacy-template` 껍데기는 버렸다). 갤러리·장바구니 폼·탭 같은 안쪽 HTML은 WooCommerce 블록이 클래식과 같은 마크업으로 출력하므로 그 부분의 클래스(`form.cart`, `.woocommerce-tabs` 등)는 그대로 쓴다. 바깥쪽 `div.product`는 없으므로 선택자는 `.kapla-product …`.
+- 블록 템플릿의 SKU 표시는 `product-sku` 블록의 `prefix` 속성으로 일본어(「商品コード: 」)로 바꿨다.
+- 관련 상품 패턴은 코어가 `is-flex-container columns-5`의 `li` 폭을 20%로 계산하므로, 격자에 맡기도록 선택자를 구체적으로 덮어썼다.
 - WooCommerce 기본 CSS의 우선순위가 높아서 상품 목록·상세·탭 규칙은 `body.woocommerce …`, `.single-product.woocommerce …`처럼 선택자를 더 구체적으로 썼다.
 - WooCommerce가 블록 템플릿에서 상품 이미지 줌을 강제로 켜기 때문에, `functions.php`의 줌 끄기 필터는 우선순위 999로 걸었다.
-- 스타일시트는 `style.css` 하나(섹션 0~13)이고 버전은 0.3.8. 브라우저가 이전 CSS를 기억하면 강제 새로고침(Ctrl+F5)한다.
+- 스타일시트는 `style.css` 하나(섹션 0~13)이고 버전은 0.4.5. 브라우저가 이전 CSS를 기억하면 강제 새로고침(Ctrl+F5)한다.
 - 실제 상품 사진이 들어오면 이미지 비율(4:5)과 배경색(sand)은 그대로 쓸 수 있다.

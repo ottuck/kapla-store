@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.3.8
+Version: 0.4.5
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -666,6 +666,32 @@ input[type="radio"] {
 	border-left-color: var(--wp--preset--color--sunset-red);
 }
 
+/* 블록 쪽 안내 배너(상품 상세의 장바구니 추가 알림, 카트·결제 오류 등)도 같은 모양으로 */
+.wc-block-components-notice-banner {
+	border: 1px solid var(--k-line);
+	border-left: 3px solid var(--wp--preset--color--terracotta);
+	border-radius: 0;
+	background: var(--wp--preset--color--paper);
+	color: var(--wp--preset--color--ink);
+	font-size: 0.9375rem;
+}
+
+.wc-block-components-notice-banner.is-error {
+	border-left-color: var(--wp--preset--color--sunset-red);
+}
+
+.wc-block-components-notice-banner > svg {
+	background-color: var(--wp--preset--color--terracotta-deep);
+}
+
+.wc-block-components-notice-banner.is-error > svg {
+	background-color: var(--wp--preset--color--sunset-red);
+}
+
+.wc-block-components-notice-banner .wc-forward {
+	color: var(--wp--preset--color--terracotta-deep);
+}
+
 .woocommerce-message::before,
 .woocommerce-info::before,
 .woocommerce-error::before {
@@ -710,41 +736,23 @@ input[type="radio"] {
 }
 
 /* ==========================================================================
-   7. 샵(목록)
+   7. 샵(목록) (templates/archive-product.html: 블록 템플릿. 메인의 추천 상품도 같은 규칙)
    ========================================================================== */
-.woocommerce-products-header {
-	text-align: center;
+.kapla-shop .kapla-page-head {
 	margin-bottom: var(--wp--preset--spacing--60);
+	text-align: center;
 }
 
-.woocommerce-products-header__title {
+.kapla-shop__bar {
+	margin-bottom: var(--wp--preset--spacing--50);
+}
+
+.kapla-shop__bar > * {
 	margin: 0;
-	font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
-	letter-spacing: 0.1em;
-}
-
-.woocommerce-products-header__title::before {
-	content: "SHOP";
-	display: block;
-	margin-bottom: var(--wp--preset--spacing--30);
-	font-family: var(--wp--preset--font-family--logo);
-	font-size: 0.875rem;
-	font-weight: 600;
-	letter-spacing: 0.32em;
-	color: var(--wp--preset--color--terracotta-deep);
-}
-
-.woocommerce-products-header__title::after {
-	content: "";
-	display: block;
-	width: 2.5rem;
-	height: 1px;
-	margin: var(--wp--preset--spacing--50) auto 0;
-	background: var(--wp--preset--color--terracotta);
 }
 
 .woocommerce .woocommerce-result-count {
-	margin: 0 0 var(--wp--preset--spacing--50);
+	margin: 0;
 	color: var(--wp--preset--color--ink-soft);
 	font-size: 0.8125rem;
 	letter-spacing: 0.08em;
@@ -752,7 +760,7 @@ input[type="radio"] {
 }
 
 .woocommerce .woocommerce-ordering {
-	margin: 0 0 var(--wp--preset--spacing--50);
+	margin: 0;
 }
 
 .woocommerce .woocommerce-ordering select {
@@ -762,108 +770,92 @@ input[type="radio"] {
 	font-size: 0.8125rem;
 }
 
-body.woocommerce ul.products {
+/* 상품 카드 격자: 4열 → 3열(1023px 이하) → 2열(719px 이하) */
+.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 	gap: 3.5rem 1.75rem;
 	align-items: stretch;
-	clear: both;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-body.woocommerce ul.products::before,
-body.woocommerce ul.products::after {
-	display: none;
-}
-
-body.woocommerce ul.products[class*="columns-"] li.product {
-	float: none;
-	width: auto;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-	text-align: left;
-}
-
 @media (max-width: 1023px) {
-	body.woocommerce ul.products {
+	.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 }
 
 @media (max-width: 719px) {
-	body.woocommerce ul.products {
+	.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 2.5rem 1rem;
 	}
 }
 
-.woocommerce ul.products li.product a.woocommerce-LoopProduct-link {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	color: inherit;
-	text-decoration: none;
+/* 코어의 flex 컨테이너 폭 계산(관련 상품 패턴 등)을 끄고 격자에 맡긴다 */
+.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template.is-flex-container.is-flex-container[class*="columns-"] > li {
+	width: 100%;
+	max-width: none;
+	justify-self: stretch;
 }
 
-.woocommerce ul.products li.product a img {
-	width: 100%;
-	height: auto;
-	aspect-ratio: 4 / 5;
+.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-template > li {
+	margin: 0;
+	text-align: left;
+}
+
+.wp-block-woocommerce-product-collection .wc-block-components-product-image {
 	margin: 0 0 1.1rem;
-	object-fit: cover;
 	background: var(--wp--preset--color--sand);
 }
 
-.woocommerce ul.products li.product .woocommerce-loop-product__title {
+.wp-block-woocommerce-product-collection .wc-block-components-product-image img {
+	width: 100%;
+	aspect-ratio: 4 / 5;
+	object-fit: cover;
+}
+
+.wp-block-woocommerce-product-collection .wp-block-post-title {
 	margin: 0 0 0.35rem;
-	padding: 0;
 	font-family: var(--wp--preset--font-family--serif);
 	font-size: 1rem;
 	font-weight: 500;
 	letter-spacing: 0.06em;
 	line-height: 1.6;
+	text-align: left;
 }
 
-.woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
+.wp-block-woocommerce-product-collection .wp-block-post-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.wp-block-woocommerce-product-collection .wp-block-post-title a:hover {
 	text-decoration: underline;
 	text-underline-offset: 0.35em;
 	text-decoration-thickness: 1px;
 }
 
-.woocommerce ul.products li.product .price,
-.woocommerce div.product p.price,
-.woocommerce div.product span.price {
-	color: var(--wp--preset--color--ink-soft);
+.wp-block-woocommerce-product-collection .wp-block-woocommerce-product-price {
+	margin: 0;
+	text-align: left;
+}
+
+.wc-block-components-product-price,
+.wp-block-woocommerce-product-price {
 	font-family: var(--wp--preset--font-family--logo);
-	font-size: 1.1875rem;
 	font-weight: 600;
 	letter-spacing: 0.06em;
 }
 
-.woocommerce ul.products li.product .price {
-	margin: 0 0 1rem;
+.wp-block-woocommerce-product-collection .wc-block-components-product-price {
+	text-align: left;
 }
 
-/* 목록의 카트 버튼: 가는 테두리 버튼(마우스를 올리면 채워진다) */
-body.woocommerce ul.products li.product .button {
-	margin-top: 1rem;
-	padding: 0.7rem 1rem;
-	border-color: var(--wp--preset--color--ink);
-	background: transparent;
-	color: var(--wp--preset--color--ink);
-	text-align: center;
-}
-
-.woocommerce ul.products li.product .button:hover {
-	background: var(--wp--preset--color--ink);
-	color: var(--wp--preset--color--paper);
-}
-
-.woocommerce ul.products li.product .added_to_cart {
+.wp-block-woocommerce-product-collection .added_to_cart {
+	display: block;
 	margin-top: 0.6rem;
 	font-size: 0.8125rem;
 	text-align: center;
@@ -881,6 +873,7 @@ body.woocommerce ul.products li.product .button {
 }
 
 .wp-block-woocommerce-product-collection .wc-block-components-product-button__button {
+	width: 100%;
 	padding: 0.7rem 1.25rem;
 	border: 1px solid var(--wp--preset--color--ink);
 	background: transparent;
@@ -900,43 +893,30 @@ body.woocommerce ul.products li.product .button {
 }
 
 /* ==========================================================================
-   8. 상품 상세
+   8. 상품 상세 (templates/single-product.html: 블록 템플릿)
    ========================================================================== */
-.single-product div.product {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-	column-gap: clamp(2rem, 5vw, 5.5rem);
-	align-items: start;
+.kapla-product__top {
+	align-items: flex-start;
+	margin-bottom: 0;
 }
 
-.single-product.woocommerce div.product > div.woocommerce-product-gallery {
-	width: 100%;
-	float: none;
-	margin: 0;
+.kapla-product__top > .wp-block-column {
+	min-width: 0;
 }
 
-.single-product.woocommerce div.product > div.summary {
-	width: 100%;
-	float: none;
-	margin: 0;
+.kapla-product__summary {
 	padding-top: 0.5rem;
 }
 
-.single-product.woocommerce div.product > div.woocommerce-tabs,
-.single-product.woocommerce div.product > section.related,
-.single-product.woocommerce div.product > section.upsells {
-	grid-column: 1 / -1;
-	width: 100%;
+@media (max-width: 781px) {
+	.kapla-product__top > .wp-block-column {
+		flex-basis: 100% !important;
+	}
 }
 
-@media (max-width: 799px) {
-	.single-product div.product {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.single-product.woocommerce div.product > div.woocommerce-product-gallery {
-		margin-bottom: var(--wp--preset--spacing--60);
-	}
+.kapla-product .woocommerce-product-gallery {
+	width: 100%;
+	margin: 0;
 }
 
 .woocommerce-product-gallery__image img {
@@ -949,39 +929,43 @@ body.woocommerce ul.products li.product .button {
 	display: none;
 }
 
-.single-product .product_title {
+.kapla-product .wp-block-post-title {
 	margin: 0 0 var(--wp--preset--spacing--40);
 	font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem);
 	letter-spacing: 0.08em;
 	line-height: 1.55;
 }
 
-.woocommerce div.product p.price {
+.kapla-product .wp-block-woocommerce-product-price {
 	margin: 0 0 var(--wp--preset--spacing--50);
-	color: var(--wp--preset--color--ink);
-	font-size: 1.625rem;
 }
 
-.woocommerce-product-details__short-description {
+.kapla-product .wp-block-woocommerce-product-price .wc-block-components-product-price {
+	color: var(--wp--preset--color--ink);
+	font-size: 1.625rem;
+	text-align: left;
+}
+
+.kapla-product__excerpt {
 	margin-bottom: var(--wp--preset--spacing--50);
 	padding-bottom: var(--wp--preset--spacing--50);
 	border-bottom: 1px solid var(--k-line);
 	color: var(--wp--preset--color--ink-soft);
 }
 
-.woocommerce-product-details__short-description p {
+.kapla-product__excerpt p {
 	margin: 0;
 }
 
-.woocommerce div.product p.stock {
+.kapla-product .wc-block-add-to-cart-form p.stock {
 	margin: 0 0 var(--wp--preset--spacing--40);
 	color: var(--wp--preset--color--ink-soft);
 	font-size: 0.8125rem;
 	letter-spacing: 0.08em;
 }
 
-/* 수량 입력과 카트 버튼: 같은 높이(2.75rem)로 낮게. WooCommerce의 legacy-template 규칙이 padding을 덮어쓰므로 선택자를 구체적으로 쓴다 */
-.woocommerce div.product form.cart {
+/* 수량 입력과 카트 버튼: 같은 높이(2.75rem)로 낮게 */
+.kapla-product form.cart {
 	display: flex;
 	gap: 0.75rem;
 	align-items: stretch;
@@ -989,11 +973,11 @@ body.woocommerce ul.products li.product .button {
 	margin: 0 0 var(--wp--preset--spacing--50);
 }
 
-.woocommerce div.product form.cart div.quantity {
+.kapla-product form.cart div.quantity {
 	margin: 0;
 }
 
-.woocommerce div.product form.cart div.quantity .input-text.qty {
+.kapla-product form.cart div.quantity .input-text.qty {
 	box-sizing: border-box;
 	width: 4rem;
 	height: 2.75rem;
@@ -1001,7 +985,7 @@ body.woocommerce ul.products li.product .button {
 	text-align: center;
 }
 
-.woocommerce div.product form.cart .single_add_to_cart_button {
+.kapla-product form.cart .single_add_to_cart_button {
 	flex: 1;
 	box-sizing: border-box;
 	height: 2.75rem;
@@ -1011,17 +995,17 @@ body.woocommerce ul.products li.product .button {
 }
 
 @media (max-width: 479px) {
-	.woocommerce div.product form.cart .single_add_to_cart_button {
+	.kapla-product form.cart .single_add_to_cart_button {
 		padding-inline: 0.75rem;
 		letter-spacing: 0.08em;
 	}
 
-	.woocommerce div.product form.cart div.quantity .input-text.qty {
+	.kapla-product form.cart div.quantity .input-text.qty {
 		width: 3.5rem;
 	}
 }
 
-.woocommerce div.product .product_meta {
+.kapla-product .wp-block-woocommerce-product-meta {
 	display: grid;
 	gap: 0.25rem;
 	padding-top: var(--wp--preset--spacing--40);
@@ -1031,21 +1015,21 @@ body.woocommerce ul.products li.product .button {
 	letter-spacing: 0.06em;
 }
 
-.woocommerce div.product .product_meta > span {
-	display: block;
+.kapla-product .wp-block-woocommerce-product-meta > * {
+	margin: 0;
 }
 
-.woocommerce div.product .product_meta a {
+.kapla-product .wp-block-woocommerce-product-meta a {
 	color: inherit;
 	text-underline-offset: 0.3em;
 }
 
 /* 탭(설명 / 리뷰): 박스 없이 밑줄만 */
-.woocommerce div.product .woocommerce-tabs {
+.kapla-product .woocommerce-tabs {
 	margin-top: var(--wp--preset--spacing--80);
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs {
+.kapla-product .woocommerce-tabs ul.tabs {
 	display: flex;
 	gap: 2.5rem;
 	margin: 0 0 var(--wp--preset--spacing--60);
@@ -1054,13 +1038,13 @@ body.woocommerce ul.products li.product .button {
 	list-style: none;
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs::before,
-.woocommerce div.product .woocommerce-tabs ul.tabs li::before,
-.woocommerce div.product .woocommerce-tabs ul.tabs li::after {
+.kapla-product .woocommerce-tabs ul.tabs::before,
+.kapla-product .woocommerce-tabs ul.tabs li::before,
+.kapla-product .woocommerce-tabs ul.tabs li::after {
 	display: none;
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs li {
+.kapla-product .woocommerce-tabs ul.tabs li {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -1068,7 +1052,7 @@ body.woocommerce ul.products li.product .button {
 	background: transparent;
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+.kapla-product .woocommerce-tabs ul.tabs li a {
 	display: block;
 	margin-bottom: -1px;
 	padding: 0.9rem 0;
@@ -1081,28 +1065,28 @@ body.woocommerce ul.products li.product .button {
 	transition: color 0.2s var(--k-ease);
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover {
+.kapla-product .woocommerce-tabs ul.tabs li a:hover {
 	color: var(--wp--preset--color--ink);
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs li.active {
+.kapla-product .woocommerce-tabs ul.tabs li.active {
 	border: 0;
 	background: transparent;
 }
 
-.woocommerce div.product .woocommerce-tabs ul.tabs li.active a {
+.kapla-product .woocommerce-tabs ul.tabs li.active a {
 	border-bottom-color: var(--wp--preset--color--ink);
 	color: var(--wp--preset--color--ink);
 }
 
-.woocommerce div.product .woocommerce-tabs .panel {
+.kapla-product .woocommerce-tabs .panel {
 	max-width: 760px;
 	margin: 0;
 	padding: 0;
 }
 
 /* 탭 이름과 같은 제목은 중복이라 숨긴다 */
-.woocommerce div.product .woocommerce-tabs .panel > h2:first-child {
+.kapla-product .woocommerce-tabs .panel > h2:first-child {
 	display: none;
 }
 
@@ -1179,18 +1163,18 @@ body.woocommerce ul.products li.product .button {
 }
 
 /* 관련 상품 */
-.single-product .related.products {
+.kapla-product .wp-block-woocommerce-product-collection {
 	margin-top: var(--wp--preset--spacing--80);
 }
 
-.single-product .related.products > h2 {
+.kapla-product .wp-block-woocommerce-product-collection > h2 {
 	margin: 0 0 var(--wp--preset--spacing--60);
 	font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
 	letter-spacing: 0.1em;
 	text-align: center;
 }
 
-.single-product .related.products > h2::after {
+.kapla-product .wp-block-woocommerce-product-collection > h2::after {
 	content: "";
 	display: block;
 	width: 2.5rem;
