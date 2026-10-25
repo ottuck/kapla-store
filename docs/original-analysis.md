@@ -97,8 +97,10 @@ Spring Boot + JSP + MyBatis + Oracle. 주요 화면은 `main`, `brand`, `event`,
 - 사이트 언어 일본어, 통화 JPY(소수점 0자리), 세금은 税込 표시
 - 특정상거래법 표기, 개인정보 처리방침 페이지는 더미로 작성
 - 결제는 테스트 모드만, 공개 데모에는 `noindex`와 「デモサイト」 표시
-- 공개 방식: Phase 1~2는 로컬(LocalWP)만 사용하고, 공개 데모는 **WordPress Playground(Cloudflare Pages 정적 호스팅)를 먼저** 시도한다. 주소는 `kapla.portfolio-hub.dev` 후보
-- 서버 호스팅이 필요해지면 **Lightsail 새 인스턴스 + Cloudflare 프록시**를 검토한다. 기존 인스턴스에는 넣지 않는다(메모리 여유가 적다)
+- 공개 방식(갱신): Local에서 결제 흐름(Stripe 테스트)까지 완성한 뒤 **M1 홈서버(Docker Compose + Cloudflare Tunnel)** 로 이전해 공개한다. Playground는 파이프라인에서 제외하고, 서버가 꺼졌을 때의 대체 데모 정도의 선택 사항으로 둔다. 주소는 `kapla.portfolio-hub.dev` 후보
+- 기존 Lightsail 인스턴스에는 넣지 않는다(메모리 여유가 적다). 월 약 1,000엔 이상의 추가 지출은 하지 않으며 유료 공유호스팅은 계약하지 않는다(조사: `docs/hosting-reference.md`)
+- **PHP는 8.5.12를 유지한다**(사용자 결정, 2026-10-26). 일본 공유호스팅 조사(`docs/hosting-reference.md`)는 나중에 고객 납품 호스팅을 조사하는 수고를 덜기 위한 사전 조사일 뿐이며, 납품 시점에 대상 호스팅 PHP로 호환 테스트를 한다.
+- 홈서버: MacBook Air M1(Docker, RAM 8GB) 위에서 컨테이너로 운영하고, 포트는 외부에 직접 열지 않고 터널을 통해서만 공개한다. 컨테이너별 메모리 제한을 둔다. 자세한 구성은 Git에 두지 않는 별도 문서에 있다
 - WordPress는 MySQL/MariaDB만 공식 지원하므로 기존 Postgres를 쓰지 않고 MariaDB를 별도로 둔다
 - Playground는 WooCommerce 실행 시점 설치 시 첫 로딩이 30~60초일 수 있어(공식 문서), 빌드에 포함하는 방식과 Cloudflare Pages 파일 크기 제한(파일당 25MiB로 알고 있음)을 확인해야 한다
 - 작업 방식: Claude가 구현하고 사용자는 결과물과 관리자 화면을 확인
