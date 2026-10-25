@@ -68,6 +68,9 @@ $products = array(
 	array( 'KP-GIFT-SET', 'ギフトセット(オイルパフューム + キャンドル)', 8800, array( $cat_gift ), array( $tag_signature ), 'お好きな香りのオイルパフューム10mlとキャンドル120gのセット。', '同じ香りで揃えた特別なギフト。ギフトボックスと手提げ袋つきです。' ),
 );
 
+// メインページの「コレクション」に出す商品(管理画面の星マークで変更できる)
+$featured_skus = array( 'KP-OIL-SALAR', 'KP-OIL-DUSK', 'KP-OIL-CEDAR', 'KP-GIFT-SET' );
+
 foreach ( $products as $row ) {
 	list( $sku, $name, $price, $cats, $tags, $notes, $desc ) = $row;
 	$pid     = wc_get_product_id_by_sku( $sku );
@@ -78,6 +81,7 @@ foreach ( $products as $row ) {
 	$product->set_slug( strtolower( $sku ) );
 	$product->set_status( 'publish' );
 	$product->set_catalog_visibility( 'visible' );
+	$product->set_featured( in_array( $sku, $featured_skus, true ) );
 	$product->set_regular_price( (string) $price );
 	$product->set_tax_status( 'taxable' );
 	$product->set_manage_stock( true );

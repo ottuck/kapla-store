@@ -120,6 +120,35 @@ Text Domain: kapla
 	gap: var(--wp--preset--spacing--50);
 }
 
+/* 모바일: 오른쪽 메뉴(お知らせ·店舗)는 숨기고, 왼쪽 햄버거 메뉴 안에서 보여 준다 */
+.kapla-nav-mobile-only {
+	display: none;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .kapla-nav-mobile-only {
+	display: block;
+}
+
+@media (max-width: 599px) {
+	.kapla-header__sub {
+		display: none;
+	}
+
+	.kapla-header .wp-block-site-title {
+		font-size: var(--wp--preset--font-size--large);
+	}
+}
+
+/* 햄버거 메뉴를 열었을 때는 영상 위가 아니라 크림 바탕에 진한 글씨로 */
+.wp-block-navigation__responsive-container.is-menu-open {
+	background-color: var(--wp--preset--color--cream);
+	color: var(--wp--preset--color--ink);
+}
+
+.home .kapla-header .wp-block-navigation__responsive-container.is-menu-open a {
+	color: var(--wp--preset--color--ink);
+}
+
 /* 푸터 */
 .kapla-footer a {
 	color: inherit;
