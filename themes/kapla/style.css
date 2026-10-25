@@ -1,7 +1,7 @@
 /*
 Theme Name: Kapla
 Description: Kapla Store 블록 테마 (WooCommerce 리메이크)
-Version: 0.4.12
+Version: 0.4.13
 Requires at least: 6.5
 Requires PHP: 8.1
 Text Domain: kapla
@@ -1330,17 +1330,59 @@ input[type="radio"] {
 	float: none;
 }
 
-.woocommerce-form-login .woocommerce-form-login__rememberme {
-	margin-right: 1rem;
+/* ログイン行: ボタンとチェックボックスを同じ高さの行にそろえる。文字はラベルと同じ 14px */
+.woocommerce-account form.login p.form-row:has(.woocommerce-form-login__submit) {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1.5rem;
+	margin: var(--wp--preset--spacing--50) 0 0;
 }
 
-.woocommerce-form-login__submit {
-	margin: 0 1rem 0 0;
+.woocommerce-account form.login p.form-row:has(.woocommerce-form-login__submit)::before,
+.woocommerce-account form.login p.form-row:has(.woocommerce-form-login__submit)::after {
+	display: none;
 }
 
-.woocommerce-account .lost_password {
-	margin: var(--wp--preset--spacing--40) 0 0;
-	font-size: 0.8125rem;
+.woocommerce-account form.login .woocommerce-form-login__submit {
+	order: 1;
+	float: none;
+	min-height: 3rem;
+	margin: 0;
+	padding: 0.5rem 2.25rem;
+	font-size: 0.875rem;
+	letter-spacing: 0.14em;
+}
+
+.woocommerce-account form.login .woocommerce-form-login__rememberme {
+	order: 2;
+	margin: 0;
+	color: var(--wp--preset--color--ink-soft);
+	font-size: 0.875rem;
+	letter-spacing: 0.06em;
+}
+
+.woocommerce-account form.login .woocommerce-form-login__rememberme input[type="checkbox"] {
+	width: 1.125rem;
+	height: 1.125rem;
+	margin: 0;
+}
+
+.woocommerce-account form.login .form-row label,
+.woocommerce-account form.login .form-row .input-text {
+	font-size: 0.875rem;
+}
+
+.woocommerce-account form.login .form-row .input-text {
+	min-height: 3rem;
+	font-size: 0.9375rem;
+}
+
+.woocommerce-account .lost_password,
+.woocommerce-account form.login .lost_password {
+	margin: 1.5rem 0 0;
+	font-size: 0.875rem;
+	letter-spacing: 0.06em;
 }
 
 .woocommerce-account.logged-in .woocommerce {
