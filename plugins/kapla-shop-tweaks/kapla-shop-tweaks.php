@@ -10,6 +10,21 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Stripe プラグインに日本語訳が無いカード決済の名称を日本語にする。
+ */
+add_filter(
+	'gettext',
+	static function ( string $translated, string $text, string $domain ): string {
+		if ( 'woocommerce-gateway-stripe' === $domain && 'Credit / Debit Card' === $text ) {
+			return 'クレジットカード / デビットカード';
+		}
+		return $translated;
+	},
+	10,
+	3
+);
+
+/**
  * 送料無料の条件(8,000円以上)を満たすときは、有料の送料を選択肢から外す。
  * WooCommerce の標準では無料と有料の両方が表示されるため。
  */
