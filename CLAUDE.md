@@ -25,6 +25,8 @@
 - 공개 주소 후보: `https://kapla.portfolio-hub.dev`. Tunnel 이름은 `<tunnel-name>`, 서비스 포트는 `127.0.0.1:8081`.
 - 홈서버 공통 인프라 원문은 사용자의 `Downloads/<infra-notes>.md`(Windows PC)다. 그 요지: MacBook Air M1(RAM 8GB, SSD 256GB), Docker, Tailscale(관리용), Cloudflare Tunnel(공개용), 프로젝트별 `~/server/apps/<project>/` + 독립 Compose, 포트는 127.0.0.1에만 bind, 컨테이너마다 메모리 제한, 공유기 포트포워딩 없음.
 - `docs/home-server.md`는 사용자가 **일부러 지운 파일**이다. 복원하지 않는다.
-- 이전 전 확인이 남아 있다(Mac에서 직접 확인): `cloudflared` 자동 시작, Docker 로그인 시 실행, 절전 방지, 재부팅 후 자동 복구, Tunnel `<tunnel-name>`이 **Mac에서** 실행되는지, `portfolio-hub.dev` DNS가 Cloudflare에 있는지.
-- 검증 상태: Compose와 이전 절차는 Windows Docker(amd64)의 임시 스택에서 확인했다. **M1(arm64) 실기, 실제 Cloudflare 연결, SMTP는 아직 확인하지 않았다.** 확인하지 않은 부분을 확인한 것처럼 보고하지 않는다.
+- 진행 상태(2026-10-26): 홈서버(`~/server/apps/kapla-store/infra/home-server`)에 컨테이너가 떠 있고 DB·uploads 가져오기와 주소 치환이 끝났다. Tunnel ingress(`kapla.portfolio-hub.dev → localhost:8081`)도 넣었다. 남은 것: Cloudflare 대시보드에서 CNAME 추가(README 4장), 캐시 우회·wp-admin 보호(5장), cron·백업(6~7장), SMTP, 재부팅 후 자동 복구 확인.
+- PC에서 Mac으로는 SSH 키(`~/.ssh/<ssh-key>`)로 접속한다(`<mac-user>@<mac-host>`, Tailscale). 코드는 PC에서 커밋한 뒤 `git push <mac-user>@<mac-host>:server/apps/kapla-store main`으로 Mac에 반영한다(SSH 세션에서는 키체인이 잠겨 GitHub 인증을 못 쓴다).
+- 이 Tunnel의 `cert.pem`은 `<other-domain>`용이다. `portfolio-hub.dev` DNS는 `cloudflared tunnel route dns`가 아니라 대시보드에서 CNAME으로 넣는다.
+- 검증 상태: 이전 절차는 Windows Docker와 M1 실기에서 확인했다. **공개 주소 동작, SMTP는 아직 확인하지 않았다.** 확인하지 않은 부분을 확인한 것처럼 보고하지 않는다.
 - 아직 없는 작업: 주문·문의 메일용 SMTP 릴레이, Stripe 웹훅 등록(공개 주소가 생긴 뒤), 공개 후 Lighthouse 측정.

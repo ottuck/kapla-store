@@ -19,7 +19,8 @@ Internet → Cloudflare → Tunnel(<tunnel-name>) → 127.0.0.1:8081 → wordpre
 - 메모리 상한은 `wordpress` 512m, `db` 512m, `wpcli` 256m이다. Apache 동시 처리(MaxRequestWorkers)는 6으로 줄였다.
 - 터널 뒤 HTTPS 인식은 공식 이미지의 wp-config가 `X-Forwarded-Proto: https`를 보고 처리한다. 방문자 IP는 `CF-Connecting-IP`로 되돌린다(포트가 루프백에만 열려 있어 터널을 거친 요청만 들어온다).
 - `wp-config.php`의 `DISALLOW_FILE_EDIT`, `DISABLE_WP_CRON`(시스템 cron으로 대체), 코어 자동 업데이트 끔, `xmlrpc.php` 차단이 적용되어 있다.
-- 이 문서의 3~7장 명령은 Windows의 Docker(amd64)에서 임시 스택(포트 18081)으로 실행해 확인했다: 로컬 덤프 가져오기, uploads 복원, 주소 치환(44건 + 15건), 플러그인 4종 고정 설치와 활성 상태 유지, 메인·브랜드·FAQ·문의·카트 페이지 응답(`Host`/`X-Forwarded-Proto` 헤더로 터널 뒤 동작을 흉내), `xmlrpc.php` 403, wp-cron 200, 백업과 복원 리허설. 유휴 메모리는 wordpress 약 135MB, db 약 223MB였다. **M1(arm64) 실기, 실제 Cloudflare 연결(4~5장), SMTP는 아직 확인하지 않았다.**
+- 이 문서의 3~7장 명령은 Windows의 Docker(amd64)에서 임시 스택(포트 18081)으로 실행해 확인했다: 로컬 덤프 가져오기, uploads 복원, 주소 치환(44건 + 15건), 플러그인 4종 고정 설치와 활성 상태 유지, 메인·브랜드·FAQ·문의·카트 페이지 응답(`Host`/`X-Forwarded-Proto` 헤더로 터널 뒤 동작을 흉내), `xmlrpc.php` 403, wp-cron 200, 백업과 복원 리허설. 유휴 메모리는 wordpress 약 135MB, db 약 223MB였다. 같은 3장 절차를 M1 홈서버(arm64)에서도 실행해 확인했다(2026-10-26): 가져오기, 주소 치환(41건 + 3건), 플러그인 설치, 모든 주요 페이지 200, 혼합 콘텐츠(http 링크) 없음, 메모리는 wordpress 약 119MB, db 약 233MB. **공개 주소(DNS와 Cloudflare 설정, 4~5장), SMTP는 아직 확인하지 않았다.**
+- 이 환경에서는 SSH 세션에서 macOS 키체인이 잠겨 있어 `gh`/`git`의 저장된 GitHub 토큰을 쓸 수 없다. PC에서 `git push <mac-user>@<mac>:server/apps/kapla-store main`으로 직접 보냈다(Mac 쪽은 `receive.denyCurrentBranch=updateInstead`).
 
 ## 0. 이전 전 확인
 
@@ -114,12 +115,20 @@ wpc cache flush
 
 ```bash
 cloudflared tunnel ingress validate
-cloudflared tunnel route dns <tunnel-name> kapla.portfolio-hub.dev
-# cloudflared 서비스를 재시작한 뒤:
+launchctl kickstart -k gui/$(id -u)/com.cloudflare.cloudflared   # cloudflared 재시작
+```
+
+**DNS는 `cloudflared tunnel route dns`를 쓰지 않는다.** 홈서버의 `~/.cloudflared/cert.pem`은 `<other-domain>` 존용이라, 다른 도메인(`portfolio-hub.dev`)에 쓰면 `kapla.portfolio-hub.dev.<other-domain>`라는 엉뚱한 레코드가 만들어진다. 대신 Cloudflare 대시보드 → `portfolio-hub.dev` → DNS → 레코드 추가로 직접 넣는다.
+
+| 유형 | 이름 | 대상 | 프록시 |
+|---|---|---|---|
+| CNAME | `kapla` | `<tunnel-id>.cfargotunnel.com` | 켬(주황 구름) |
+
+```bash
 curl -I https://kapla.portfolio-hub.dev/
 ```
 
-`record already exists`가 나오면 같은 이름의 기존 DNS 레코드를 먼저 확인한다.
+참고: 서버의 launchd 설정(`~/Library/LaunchAgents/com.cloudflare.cloudflared.plist`)은 `ProgramArguments`가 `cloudflared`뿐이라 사용법만 출력하고 종료를 반복했다. `tunnel`, `run` 인자를 추가해 고쳤다(2026-10-26, 원본은 `.plist.bak-20261026`).
 
 ## 5. Cloudflare 대시보드 설정
 
