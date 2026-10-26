@@ -130,6 +130,8 @@ curl -I https://kapla.portfolio-hub.dev/
 
 참고: 서버의 launchd 설정(`~/Library/LaunchAgents/com.cloudflare.cloudflared.plist`)은 `ProgramArguments`가 `cloudflared`뿐이라 사용법만 출력하고 종료를 반복했다. `tunnel`, `run` 인자를 추가해 고쳤다(2026-10-26, 원본은 `.plist.bak-20261026`).
 
+> **범위 안내**: 이 프로젝트는 포트폴리오 데모라서 5~7장(캐시·Access, cron, 백업과 복원 리허설)과 9장의 SMTP·키 교체는 **하지 않기로 했다**(2026-10-26 사용자 결정). 외주 문의가 실제로 오가거나 상시 운영이 필요해질 때 참고한다.
+
 ## 5. Cloudflare 대시보드 설정
 
 **캐시 우회(Cache Rules)**: 아래 조건 중 하나라도 맞으면 `Bypass cache`.

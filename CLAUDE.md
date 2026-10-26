@@ -25,7 +25,8 @@
 - 공개 주소 후보: `https://kapla.portfolio-hub.dev`. Tunnel 이름은 `<tunnel-name>`, 서비스 포트는 `127.0.0.1:8081`.
 - 홈서버 공통 인프라 원문은 사용자의 `Downloads/<infra-notes>.md`(Windows PC)다. 그 요지: MacBook Air M1(RAM 8GB, SSD 256GB), Docker, Tailscale(관리용), Cloudflare Tunnel(공개용), 프로젝트별 `~/server/apps/<project>/` + 독립 Compose, 포트는 127.0.0.1에만 bind, 컨테이너마다 메모리 제한, 공유기 포트포워딩 없음.
 - `docs/home-server.md`는 사용자가 **일부러 지운 파일**이다. 복원하지 않는다.
-- 진행 상태(2026-10-26): 홈서버(`~/server/apps/kapla-store/infra/home-server`)에 컨테이너가 떠 있고 DB·uploads 가져오기와 주소 치환이 끝났다. Tunnel ingress(`kapla.portfolio-hub.dev → localhost:8081`)도 넣었다. 남은 것: Cloudflare 대시보드에서 CNAME 추가(README 4장), 캐시 우회·wp-admin 보호(5장), cron·백업(6~7장), SMTP, 재부팅 후 자동 복구 확인.
+- 진행 상태(2026-10-26): 홈서버(`~/server/apps/kapla-store/infra/home-server`)에 컨테이너가 떠 있고 DB·uploads 가져오기와 주소 치환이 끝났다. Tunnel ingress(`kapla.portfolio-hub.dev → localhost:8081`)도 넣었다. 남은 것: Cloudflare 대시보드에서 CNAME 추가(README 4장)와 공개 주소 확인뿐이다.
+- **범위는 포트폴리오 데모 수준**이다(사용자 결정, 2026-10-26). 당장 외주나 급한 일정이 없고 M1은 꺼 두는 날도 있다. 따라서 SMTP 메일 릴레이, 백업 복원 리허설, 카드 결제 재확인, Stripe 테스트 키 교체, cron·정기 백업, Cloudflare 캐시 규칙·Access 보호, 재부팅 복구 점검은 **하지 않기로 했다**(README 5~7장은 필요해질 때 참고용). 서비스 수준으로 완성도를 올리려 하지 않는다.
 - PC에서 Mac으로는 SSH 키(`~/.ssh/<ssh-key>`)로 접속한다(`<mac-user>@<mac-host>`, Tailscale). 코드는 PC에서 커밋한 뒤 `git push <mac-user>@<mac-host>:server/apps/kapla-store main`으로 Mac에 반영한다(SSH 세션에서는 키체인이 잠겨 GitHub 인증을 못 쓴다).
 - 이 Tunnel의 `cert.pem`은 `<other-domain>`용이다. `portfolio-hub.dev` DNS는 `cloudflared tunnel route dns`가 아니라 대시보드에서 CNAME으로 넣는다.
 - 검증 상태: 이전 절차는 Windows Docker와 M1 실기에서 확인했다. **공개 주소 동작, SMTP는 아직 확인하지 않았다.** 확인하지 않은 부분을 확인한 것처럼 보고하지 않는다.
