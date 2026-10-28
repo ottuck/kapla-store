@@ -1,5 +1,5 @@
-# Kapla Store 홈서버(M1 + Docker) 배포용 Compose.
-# 사용법과 이전 절차는 README.md, 변수는 .env.example 참고.
+# Kapla Store 자택 서버(M1 Mac + Docker) 배포용 Compose.
+# 사용법과 이전 절차는 docs/PROJECT.md 4장, 변수는 .env.example 참고.
 #   cd ~/server/apps/kapla-store/infra/home-server
 #   docker compose -f compose.home.yaml up -d
 # 주의: 운영 중에는 `docker compose down -v` 금지(볼륨 = DB와 uploads가 지워진다).

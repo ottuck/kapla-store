@@ -15,19 +15,16 @@
 - 원본(2022~23 팀 프로젝트)의 상품 이미지, 모델 사진, 목업 속 개인정보(전화, 이메일, 사업자번호)는 **재사용 금지**. 상품 이미지는 사용자가 AI로 만든 것이다. 히어로의 일몰 영상은 사용자가 저작권 문제없이 구한 것이라 그대로 쓴다.
 - 브랜드명은 영문 Kapla. 디자인은 Warm Editorial(크림 바탕, 테라코타 `#B07650` 포인트, 세리프 제목).
 - PHP는 **8.5.12 유지**, WordPress 7.1.3, WooCommerce 11.2.1. 테마는 블록 방식(체크아웃에 문제가 생기면 클래식으로 폴백).
-- 호스팅: Local(LocalWP)에서 결제까지 완성 → **M1 맥북 홈서버**(Docker Compose + Cloudflare Tunnel)로 이전해 공개한다. 월 약 1,000엔 이상의 추가 지출 없음, 유료 공유호스팅은 계약하지 않는다. `docs/hosting-reference.md`는 나중의 납품용 사전 조사일 뿐 결정이 아니다.
+- 호스팅: Local(LocalWP)에서 결제까지 완성 → **M1 맥북 홈서버**(Docker Compose + Cloudflare Tunnel)로 이전해 공개한다. 월 약 1,000엔 이상의 추가 지출 없음, 유료 공유호스팅은 계약하지 않는다. `docs/PROJECT.md` 5장(호스팅 조사)은 나중의 납품용 사전 조사일 뿐 결정이 아니다.
 - 사용자의 다른 서비스는 AWS Lightsail에서 돌고 있다. **기존 Lightsail 인스턴스에 WordPress를 넣자고 제안하지 않는다**(RAM 2GB에 여유가 거의 없고 실계좌를 쓰는 서비스가 같이 돈다). WordPress는 MySQL/MariaDB만 지원하므로 기존 Postgres도 쓸 수 없다.
 
 ## 홈서버 이전 — 어디를 보나
 
-**기준 문서는 `infra/home-server/README.md`** 이고, 파일은 같은 폴더의 `compose.home.yaml`, `.env.example`이다. 순서: 서버 준비 → 로컬 내보내기 → 가져오기와 주소 치환 → Tunnel 연결 → Cloudflare 설정 → cron·백업.
+**기준 문서는 `docs/PROJECT.md` 4장**이고, 파일은 `infra/home-server/`의 `compose.home.yaml`, `.env.example`이다. 순서: 서버 준비 → 로컬 내보내기 → 가져오기와 주소 치환 → Tunnel 연결.
 
-- 공개 주소 후보: `https://kapla.portfolio-hub.dev`. Tunnel 이름은 `<tunnel-name>`, 서비스 포트는 `127.0.0.1:8081`.
-- 홈서버 공통 인프라 원문은 사용자의 `Downloads/<infra-notes>.md`(Windows PC)다. 그 요지: MacBook Air M1(RAM 8GB, SSD 256GB), Docker, Tailscale(관리용), Cloudflare Tunnel(공개용), 프로젝트별 `~/server/apps/<project>/` + 독립 Compose, 포트는 127.0.0.1에만 bind, 컨테이너마다 메모리 제한, 공유기 포트포워딩 없음.
+- 공개 주소: `https://kapla.portfolio-hub.dev`(2026-10-26 공개, 주요 페이지 200 확인). 서비스 포트는 `127.0.0.1:8081`.
+- 접속 정보·터널 이름·사용자 이름 같은 개인 인프라 정보는 Git에 넣지 않는다. 이 값들은 Git에서 제외된 `CLAUDE.local.md`에 있다. 저장소는 **공개(PUBLIC)** 이므로 커밋 전에 IP, 계정 이름, 다른 도메인, 터널 ID가 들어가지 않았는지 확인한다.
 - `docs/home-server.md`는 사용자가 **일부러 지운 파일**이다. 복원하지 않는다.
-- 진행 상태(2026-10-26): 홈서버(`~/server/apps/kapla-store/infra/home-server`)에 컨테이너가 떠 있고 DB·uploads 가져오기와 주소 치환이 끝났다. Tunnel ingress(`kapla.portfolio-hub.dev → localhost:8081`)도 넣었다. Cloudflare DNS(Tunnel 타입 레코드 `kapla` → `<tunnel-name>`, 프록시 켬)도 추가되어 **`https://kapla.portfolio-hub.dev`가 공개되어 있다**(2026-10-26 확인: 주요 페이지 200, 혼합 콘텐츠 없음, 히어로 영상 정상). 이전 작업은 끝났다. 관리자 비밀번호는 로컬과 같은 값 그대로 두기로 사용자가 정했다(재론하지 않는다).
-- **범위는 포트폴리오 데모 수준**이다(사용자 결정, 2026-10-26). 당장 외주나 급한 일정이 없고 M1은 꺼 두는 날도 있다. 따라서 SMTP 메일 릴레이, 백업 복원 리허설, 카드 결제 재확인, Stripe 테스트 키 교체, cron·정기 백업, Cloudflare 캐시 규칙·Access 보호, 재부팅 복구 점검은 **하지 않기로 했다**(README 5~7장은 필요해질 때 참고용). 서비스 수준으로 완성도를 올리려 하지 않는다.
-- PC에서 Mac으로는 SSH 키(`~/.ssh/<ssh-key>`)로 접속한다(`<mac-user>@<mac-host>`, Tailscale). 코드는 PC에서 커밋한 뒤 `git push <mac-user>@<mac-host>:server/apps/kapla-store main`으로 Mac에 반영한다(SSH 세션에서는 키체인이 잠겨 GitHub 인증을 못 쓴다).
-- 이 Tunnel의 `cert.pem`은 `<other-domain>`용이다. `portfolio-hub.dev` DNS는 `cloudflared tunnel route dns`가 아니라 대시보드에서 CNAME으로 넣는다.
-- 검증 상태: 이전 절차는 Windows Docker와 M1 실기에서 확인했다. **공개 주소 동작, SMTP는 아직 확인하지 않았다.** 확인하지 않은 부분을 확인한 것처럼 보고하지 않는다.
-- 아직 없는 작업: 주문·문의 메일용 SMTP 릴레이, Stripe 웹훅 등록(공개 주소가 생긴 뒤), 공개 후 Lighthouse 측정.
+- 관리자 비밀번호는 로컬과 같은 값 그대로 두기로 사용자가 정했다(재론하지 않는다).
+- **범위는 포트폴리오 데모 수준**이다(사용자 결정, 2026-10-26). 당장 외주나 급한 일정이 없고 M1은 꺼 두는 날도 있다. 따라서 SMTP 메일 릴레이, 백업 복원 리허설, 카드 결제 재확인, Stripe 테스트 키 교체, cron·정기 백업, Cloudflare 캐시 규칙·Access 보호, 재부팅 복구 점검은 **하지 않기로 했다**(`docs/PROJECT.md` 4.6은 필요해질 때 참고용). 서비스 수준으로 완성도를 올리려 하지 않는다.
+- 검증 상태: 이전 절차는 Windows Docker와 M1 실기에서 확인했다. **SMTP, 공개 주소에서의 카드 결제는 확인하지 않았다.** 확인하지 않은 부분을 확인한 것처럼 보고하지 않는다.

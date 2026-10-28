@@ -27,3 +27,6 @@ dist/
 # private: not versioned (home server notes, original source video)
 /docs/home-server.md
 /assets/source/
+
+# private Claude notes (home server access details)
+CLAUDE.local.md

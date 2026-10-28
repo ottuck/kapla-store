@@ -1,0 +1,95 @@
+{
+  "title": "Kapla Store",
+  "width": 1030,
+  "height": 400,
+  "summary": "お客様のアクセスは Cloudflare Tunnel を通って自宅サーバーの WordPress に届き、データは MySQL に保存されます。カード決済は Stripe のテストモードで、コードは開発 PC から git push で反映します。",
+  "groups": [
+    {
+      "title": "M1 Mac · Docker Compose",
+      "x": 510,
+      "y": 50,
+      "w": 250,
+      "h": 320
+    }
+  ],
+  "nodes": [
+    {
+      "id": "user",
+      "x": 100,
+      "y": 150,
+      "title": "お客様・運営者",
+      "note": "ブラウザ",
+      "tone": "accent"
+    },
+    {
+      "id": "cf",
+      "x": 320,
+      "y": 150,
+      "title": "Cloudflare",
+      "note": "DNS · HTTPS · Tunnel",
+      "tone": "outside"
+    },
+    {
+      "id": "wp",
+      "x": 630,
+      "y": 150,
+      "title": "WordPress 7.1",
+      "note": "WooCommerce · PHP 8.5"
+    },
+    {
+      "id": "db",
+      "x": 630,
+      "y": 300,
+      "title": "MySQL 8.4"
+    },
+    {
+      "id": "stripe",
+      "x": 940,
+      "y": 150,
+      "title": "Stripe",
+      "note": "テストモード",
+      "tone": "outside"
+    },
+    {
+      "id": "dev",
+      "x": 320,
+      "y": 300,
+      "title": "開発 PC",
+      "note": "LocalWP · Git",
+      "tone": "accent"
+    }
+  ],
+  "edges": [
+    {
+      "from": "user",
+      "to": "cf"
+    },
+    {
+      "from": "cf",
+      "to": "wp",
+      "label": "Tunnel",
+      "offset": -12
+    },
+    {
+      "from": "wp",
+      "to": "db",
+      "both": true
+    },
+    {
+      "from": "wp",
+      "to": "stripe",
+      "label": "決済",
+      "both": true
+    },
+    {
+      "from": "dev",
+      "to": "wp",
+      "label": "git push",
+      "dashed": true,
+      "route": "hvh",
+      "bend": 470,
+      "toOffset": 14,
+      "labelAt": 0
+    }
+  ]
+}

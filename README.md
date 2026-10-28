@@ -1,24 +1,53 @@
 # Kapla Store
 
-가상의 향수·화장품 브랜드 "Kapla"의 온라인 숍을 **WordPress + WooCommerce 블록 테마**로 다시 만든 데모 사이트입니다. 2022년 3인 팀 프로젝트(Java/Spring/Oracle)의 리메이크이며, 일본 소규모 사업자용 숍을 가정해 일본어 UI, 엔화(JPY), 税込 표시로 구성했습니다. 결제는 Stripe 테스트 모드만 사용하고 실제 판매는 하지 않습니다.
+架空の香水・コスメブランド「Kapla」のオンラインショップを、**WordPress + WooCommerce のオリジナルブロックテーマ**で作り直したデモサイトです。2022 年の 3 人チームプロジェクト(Java / Spring / Oracle)のリメイクで、日本の小規模事業者のショップを想定し、日本語 UI、日本円(JPY)、税込表示で構成しています。決済は Stripe のテストモードのみで、実際の販売は行いません。
 
-## 구조
+- 公開デモ: https://kapla.portfolio-hub.dev (自宅サーバーで運用しているため、停止している日があります)
+- 紹介資料(お客様向け): [docs/portfolio/kapla-intro-ja.md](docs/portfolio/kapla-intro-ja.md)
+
+## 構成
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/architecture-dark.svg">
+  <img src="docs/architecture.svg" alt="構成図: お客様と運営者のブラウザから Cloudflare(DNS・HTTPS・Tunnel)を通って、M1 Mac 上の Docker Compose で動く WordPress 7.1(WooCommerce・PHP 8.5)に届きます。データは MySQL 8.4 に保存し、決済は Stripe のテストモードを使います。開発 PC(LocalWP・Git)から git push でコードを反映します。">
+</picture>
+
+- お客様と運営者のアクセスは Cloudflare Tunnel 経由で自宅サーバーに届きます。ルーターのポートは開けていません。
+- 開発は Windows の LocalWP で行い、テーマとプラグインを `git push` で自宅サーバーに反映します。
+- 図の元データは [docs/architecture.json](docs/architecture.json) です。
+
+### ディレクトリ
 
 ```
-themes/kapla/              블록 테마 (theme.json, 템플릿, 패턴, 글꼴, 히어로 영상)
-plugins/kapla-shop-tweaks/ 송료·결제 표시·스팸 방지 등 작은 보정 플러그인
-infra/home-server/         홈서버(Docker Compose + Cloudflare Tunnel) 배포 파일과 이전 절차
-scripts/                   WP-CLI 래퍼, 시드(페이지·상품·배송·문의폼·SEO), 자산 생성 스크립트
-seed/images/               상품 이미지(AI로 만든 사진 12종)
-docs/                      설계·결정·점검 기록, 포트폴리오 소개문과 화면 캡처(docs/portfolio/)
-tools/capture/             화면 캡처 스크립트(Chrome을 조작해 docs/portfolio/screenshots 에 저장)
+themes/kapla/              ブロックテーマ(theme.json、テンプレート、パターン、フォント、ヒーロー動画)
+plugins/kapla-shop-tweaks/ 送料・支払い方法の表示・スパム対策などの小さな調整用プラグイン
+infra/home-server/         自宅サーバー(Docker Compose + Cloudflare Tunnel)の配置ファイル(手順は docs/PROJECT.md)
+scripts/                   WP-CLI ラッパー、初期データ投入(ページ・商品・配送・問い合わせフォーム・SEO)、素材の生成
+seed/images/               商品画像(AI で生成した写真 12 点)
+docs/                      プロジェクト記録、デザインシステム、構成図、紹介資料と画面キャプチャ(docs/portfolio/)
+tools/capture/             画面キャプチャ用スクリプト(Chrome を操作して docs/portfolio/screenshots に保存)
 ```
 
-## 로컬 실행
+## 技術スタック
 
-전제: Windows, [Local](https://localwp.com/)에 `kapla` 사이트가 있고(PHP 8.5, MySQL 8.4), WooCommerce·Contact Form 7·SEO SIMPLE PACK·Stripe 플러그인이 설치되어 있어야 합니다.
+| 区分 | 使用技術 |
+|---|---|
+| CMS・EC | WordPress 7.1.3 / WooCommerce 11.2.1 |
+| テーマ | オリジナルのブロックテーマ(theme.json v3、ブロックテンプレート、PHP パターン、CSS) |
+| 言語 | PHP 8.5、HTML、CSS |
+| プラグイン | WooCommerce Stripe Payment Gateway(テストモード)、Contact Form 7、SEO SIMPLE PACK、自作の kapla-shop-tweaks |
+| データベース | MySQL 8.4 |
+| 決済 | Stripe(テストモード)、代金引換 |
+| フォント | Zen Kaku Gothic New、Shippori Mincho、Cormorant Garamond(いずれも OFL、サーバーから配信) |
+| 開発環境 | Windows 11、LocalWP、WP-CLI、PowerShell スクリプト |
+| 公開環境 | MacBook Air M1、Docker Compose(`wordpress:7.1.3-php8.5-apache`、`mysql:8.4`、WP-CLI)、Cloudflare(DNS・Tunnel) |
+| 補助ツール | Node.js + Puppeteer(画面キャプチャ)、Python + Pillow(商品画像の調整)、Git / GitHub |
 
-1. 테마와 플러그인을 Local 사이트에 연결합니다(정션).
+## ローカルでの実行
+
+前提: Windows で [Local](https://localwp.com/) に `kapla` サイトがあり(PHP 8.5、MySQL 8.4)、WooCommerce・Contact Form 7・SEO SIMPLE PACK・Stripe プラグインがインストールされていること。
+
+1. テーマとプラグインを Local のサイトにつなぎます(ジャンクション)。
 
 ```powershell
 $wp = "$env:USERPROFILE\Local Sites\kapla\app\public\wp-content"
@@ -26,31 +55,27 @@ New-Item -ItemType Junction -Path "$wp\themes\kapla" -Target "$PWD\themes\kapla"
 New-Item -ItemType Junction -Path "$wp\plugins\kapla-shop-tweaks" -Target "$PWD\plugins\kapla-shop-tweaks"
 ```
 
-2. 관리자 화면에서 테마 `Kapla`와 플러그인 `kapla-shop-tweaks`를 활성화합니다.
-3. 페이지, 상품, 배송, 문의 폼, SEO를 한 번에 만듭니다(여러 번 실행해도 안전합니다).
+2. 管理画面でテーマ `Kapla` とプラグイン `kapla-shop-tweaks` を有効にします。
+3. ページ、商品、配送、問い合わせフォーム、SEO をまとめて作成します(何度実行しても安全です)。
 
 ```powershell
 .\scripts\seed.ps1
 ```
 
-4. 테마 패턴을 고친 뒤에는 캐시를 지웁니다: `.\scripts\clear-cache.ps1`
-5. Stripe 테스트 키 입력: `.\scripts\stripe-test-keys.ps1` (`pk_test_`/`sk_test_`만 받습니다. 키는 DB에만 저장됩니다)
+4. テーマのパターンを変更したあとはキャッシュを消します: `.\scripts\clear-cache.ps1`
+5. Stripe のテストキーを入力します: `.\scripts\stripe-test-keys.ps1`(`pk_test_` / `sk_test_` のみ受け付けます。キーはデータベースにだけ保存されます)
 
-WP-CLI는 `.\scripts\wp.ps1 <명령>`으로 실행합니다. 상품 이미지를 바꾸는 방법은 `docs/ai-image-prompts.md`를 참고하세요.
+WP-CLI は `.\scripts\wp.ps1 <コマンド>` で実行します。商品画像の差し替え方法は `docs/ai-image-prompts.md` を参照してください。
 
-## 문서
+## ドキュメント
 
-- [원본 분석과 리메이크 결정](docs/original-analysis.md)
-- [결제·배송 설정과 테스트 현황](docs/payments.md)
-- [문의 폼과 SEO](docs/contact-seo.md)
-- [글꼴·영상·이미지 자산](docs/assets.md)
-- [상품 이미지 만들기](docs/ai-image-prompts.md)
-- [디자인 시스템(글꼴·색·구성 요소)](docs/design-system.md)
-- [화면 품질 점검 기록](docs/quality-check.md)
-- [호스팅 사전 조사](docs/hosting-reference.md)
-- [홈서버 배포와 이전 절차](infra/home-server/README.md)
+設計メモは制作者の作業用のため韓国語で書いています。
 
-## 포트폴리오용 자료
+- [プロジェクト記録(決済・配送、お問い合わせと SEO、自宅サーバーでの公開、納品用ホスティング調査)](docs/PROJECT.md)
+- [デザインシステム(フォント・色・部品・動画と画像)](docs/design-system.md)
+- [商品画像の作り方](docs/ai-image-prompts.md)
 
-- [고객용 일본어 소개문](docs/portfolio/kapla-intro-ja.md)
-- 화면 캡처(PC·스마트폰 15장): `docs/portfolio/screenshots/`. 다시 찍으려면 `cd tools/capture && npm install && npm run capture` (Chrome 필요, 로컬 `kapla.local`을 촬영합니다)
+## 紹介用の資料
+
+- [お客様向けの紹介文(日本語)](docs/portfolio/kapla-intro-ja.md)
+- 画面キャプチャ(PC・スマートフォン 15 枚): `docs/portfolio/screenshots/`。撮り直すときは `cd tools/capture && npm install && npm run capture`(Chrome が必要。ローカルの `kapla.local` を撮影します)
