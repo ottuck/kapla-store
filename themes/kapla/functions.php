@@ -2,8 +2,8 @@
 /**
  * Kapla theme setup.
  *
- * 블록 테마라서 레이아웃은 템플릿과 theme.json이 맡고, 여기서는 style.css 로딩만 처리한다.
- * 결제·주문 로직은 넣지 않는다 (WooCommerce 표준 기능을 사용).
+ * ブロックテーマのため、レイアウトはテンプレートと theme.json に任せ、ここでは style.css の読み込みと表示の小さな調整を行う。
+ * 決済・注文のロジックは入れない(WooCommerce の標準機能を使う)。
  */
 
 add_action(

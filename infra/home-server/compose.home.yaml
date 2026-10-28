@@ -1,8 +1,8 @@
-# Kapla Store 자택 서버(M1 Mac + Docker) 배포용 Compose.
-# 사용법과 이전 절차는 docs/PROJECT.md 4장, 변수는 .env.example 참고.
+# Kapla Store 自宅サーバー(M1 Mac + Docker)用の Compose。
+# 使い方と移行手順は docs/PROJECT.md の 4 章、変数は .env.example を参照。
 #   cd ~/server/apps/kapla-store/infra/home-server
 #   docker compose -f compose.home.yaml up -d
-# 주의: 운영 중에는 `docker compose down -v` 금지(볼륨 = DB와 uploads가 지워진다).
+# 注意: 運用中は `docker compose down -v` を使わない(ボリューム = DB と uploads が消える)。
 name: kapla-store
 
 x-logging: &logging
@@ -11,8 +11,8 @@ x-logging: &logging
     max-size: "10m"
     max-file: "3"
 
-# wordpress와 wpcli가 같은 파일 트리를 봐야 하므로 볼륨 정의를 공유한다.
-# 테마와 플러그인은 Git 저장소를 읽기 전용으로 겹쳐 마운트한다(코드는 Git이 원본).
+# wordpress と wpcli が同じファイルツリーを見る必要があるため、ボリュームの定義を共有する。
+# テーマとプラグインは Git リポジトリを読み取り専用で重ねてマウントする(コードの正は Git)。
 x-wp-volumes: &wp-volumes
   - kapla-wp:/var/www/html
   - ../../themes/kapla:/var/www/html/wp-content/themes/kapla:ro
@@ -20,22 +20,22 @@ x-wp-volumes: &wp-volumes
 
 services:
   wordpress:
-    # 로컬(Local)과 같은 WordPress 7.1.3 / PHP 8.5. arm64 이미지 있음(확인: 2026-10-26).
+    # ローカル(Local)と同じ WordPress 7.1.3 / PHP 8.5。arm64 版あり(確認: 2026-10-26)。
     image: wordpress:7.1.3-php8.5-apache
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     ports:
-      # 루프백에만 bind. 외부 공개는 Cloudflare Tunnel(→ http://localhost:8081)로만 한다.
+      # ループバックだけに bind。外部への公開は Cloudflare Tunnel(→ http://localhost:8081)だけで行う。
       - "127.0.0.1:${KAPLA_PORT:-8081}:80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: ${KAPLA_DB_NAME:-kapla}
       WORDPRESS_DB_USER: ${KAPLA_DB_USER:-kapla}
-      WORDPRESS_DB_PASSWORD: ${KAPLA_DB_PASSWORD:?.env에 KAPLA_DB_PASSWORD를 설정하세요}
+      WORDPRESS_DB_PASSWORD: ${KAPLA_DB_PASSWORD:?.env に KAPLA_DB_PASSWORD を設定してください}
       WORDPRESS_TABLE_PREFIX: wp_
-      WORDPRESS_AUTH_KEY: ${WORDPRESS_AUTH_KEY:?.env에 salts를 설정하세요}
+      WORDPRESS_AUTH_KEY: ${WORDPRESS_AUTH_KEY:?.env に salt を設定してください}
       WORDPRESS_SECURE_AUTH_KEY: ${WORDPRESS_SECURE_AUTH_KEY:?}
       WORDPRESS_LOGGED_IN_KEY: ${WORDPRESS_LOGGED_IN_KEY:?}
       WORDPRESS_NONCE_KEY: ${WORDPRESS_NONCE_KEY:?}
@@ -43,10 +43,10 @@ services:
       WORDPRESS_SECURE_AUTH_SALT: ${WORDPRESS_SECURE_AUTH_SALT:?}
       WORDPRESS_LOGGED_IN_SALT: ${WORDPRESS_LOGGED_IN_SALT:?}
       WORDPRESS_NONCE_SALT: ${WORDPRESS_NONCE_SALT:?}
-      # 공식 이미지의 wp-config가 X-Forwarded-Proto: https 를 보고 HTTPS=on 으로 처리한다(터널 뒤 HTTPS 인식).
-      # `$$`는 Compose 보간을 막는 이스케이프다(컨테이너 안에서는 `$`).
+      # 公式イメージの wp-config は X-Forwarded-Proto: https を見て HTTPS=on として扱う(Tunnel の後ろでも HTTPS と認識)。
+      # `$$` は Compose の変数展開を防ぐエスケープ(コンテナ内では `$`)。
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', '${KAPLA_URL:?.env에 KAPLA_URL을 설정하세요}');
+        define('WP_HOME', '${KAPLA_URL:?.env に KAPLA_URL を設定してください}');
         define('WP_SITEURL', '${KAPLA_URL}');
         define('DISALLOW_FILE_EDIT', true);
         define('DISABLE_WP_CRON', true);
@@ -74,9 +74,9 @@ services:
       MYSQL_DATABASE: ${KAPLA_DB_NAME:-kapla}
       MYSQL_USER: ${KAPLA_DB_USER:-kapla}
       MYSQL_PASSWORD: ${KAPLA_DB_PASSWORD:?}
-      MYSQL_ROOT_PASSWORD: ${KAPLA_DB_ROOT_PASSWORD:?.env에 KAPLA_DB_ROOT_PASSWORD를 설정하세요}
+      MYSQL_ROOT_PASSWORD: ${KAPLA_DB_ROOT_PASSWORD:?.env に KAPLA_DB_ROOT_PASSWORD を設定してください}
       TZ: Asia/Tokyo
-    # 8GB 기기용 절약 설정: performance_schema를 끄고 버퍼 풀을 128MB로 제한한다.
+    # メモリ 8GB の機器向けの節約設定: performance_schema を無効にし、バッファプールを 128MB に制限する。
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_520_ci
@@ -85,7 +85,7 @@ services:
       - --max-connections=40
     volumes:
       - kapla-db:/var/lib/mysql
-    # 포트를 공개하지 않는다(wordpress / wpcli는 Compose 내부 네트워크에서 db:3306으로 접속).
+    # ポートは公開しない(wordpress / wpcli は Compose の内部ネットワークから db:3306 に接続)。
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
       interval: 10s
@@ -97,11 +97,11 @@ services:
       - no-new-privileges:true
     logging: *logging
 
-  # WP-CLI. 평소에는 뜨지 않고 `docker compose --profile tools run --rm wpcli <명령>` 으로만 실행한다.
+  # WP-CLI。普段は起動せず、`docker compose --profile tools run --rm wpcli <コマンド>` でだけ実行する。
   wpcli:
     image: wordpress:cli-2.12-php8.5
     profiles: ["tools"]
-    # cli 이미지(alpine)의 www-data uid는 82, wordpress 이미지(debian)는 33이라 맞춰 준다.
+    # cli イメージ(alpine)の www-data の uid は 82、wordpress イメージ(debian)は 33 なので合わせる。
     user: "33:33"
     depends_on:
       db:
@@ -112,7 +112,7 @@ services:
       WORDPRESS_DB_USER: ${KAPLA_DB_USER:-kapla}
       WORDPRESS_DB_PASSWORD: ${KAPLA_DB_PASSWORD:?}
       WORDPRESS_TABLE_PREFIX: wp_
-      # wp-config.php의 CONFIG_EXTRA와 같은 정의를 WP-CLI에도 적용한다.
+      # wp-config.php の CONFIG_EXTRA と同じ定義を WP-CLI にも適用する。
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_HOME', '${KAPLA_URL}');
         define('WP_SITEURL', '${KAPLA_URL}');
@@ -142,7 +142,7 @@ configs:
     content: |
       ServerTokens Prod
       ServerSignature Off
-      # prefork 기본값(150 프로세스)이면 512MB를 금방 넘는다. 동시 처리 수를 줄인다.
+      # prefork の初期値(150 プロセス)ではすぐに 512MB を超えるため、同時処理数を減らす。
       <IfModule mpm_prefork_module>
         StartServers 2
         MinSpareServers 2
@@ -150,7 +150,7 @@ configs:
         MaxRequestWorkers 6
         MaxConnectionsPerChild 500
       </IfModule>
-      # XML-RPC는 쓰지 않으므로 차단한다.
+      # XML-RPC は使わないためブロックする。
       <Files "xmlrpc.php">
         Require all denied
       </Files>

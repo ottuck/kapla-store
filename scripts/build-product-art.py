@@ -1,8 +1,8 @@
-"""Kapla 상품 일러스트(12종)를 코드로 그려 seed/inbox/<SKU>.png 로 저장한다.
+"""Kapla の商品イラスト(12 点)をコードで描き、seed/inbox/<SKU>.png に保存する。
 
-AI 사진 생성 모델 없이 만든 임시 비주얼이다. 실제 사진/AI 이미지가 생기면
-같은 파일명으로 seed/inbox 에 넣고 prepare-images.py 를 실행하면 교체된다.
-빛은 왼쪽에서 오는 석양빛, 배경은 크림, 글자와 로고는 넣지 않는다.
+AI の画像生成を使わずに作った仮のビジュアル。実際の写真や AI 画像ができたら、
+同じファイル名で seed/inbox に入れて prepare-images.py を実行すると置き換わる。
+光は左からの夕日、背景はクリーム、文字とロゴは入れない。
 """
 import io
 import random
@@ -16,12 +16,12 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "seed" / "inbox"
 W, H = 800, 1000
-BASE_Y = 790  # 물건이 놓이는 바닥선
+BASE_Y = 790  # 商品を置く床の線
 SCALE = {"KP-DIFF-SALAR": 1.1, "KP-DIFF-CEDAR": 1.1, "KP-GIFT-TRIAL": 1.12, "KP-GIFT-SET": 1.1,
-         "KP-CANDLE-SALAR": 1.35, "KP-CANDLE-DUSK": 1.3}  # 그 외 1.5
+         "KP-CANDLE-SALAR": 1.35, "KP-CANDLE-DUSK": 1.3}  # それ以外は 1.5
 
 
-# ---------- 공통 부품 ----------
+# ---------- 共通の部品 ----------
 
 def lin(id_, stops, x1=0, y1=0, x2=1, y2=0):
     s = "".join(f'<stop offset="{o}" stop-color="{c}" stop-opacity="{a}"/>' for o, c, a in stops)
@@ -41,7 +41,7 @@ def shadow(cx, rx, y=BASE_Y, ry=22, opacity=0.38):
 
 
 def scene(name, glow, wall_top, wall_bottom, floor_top, floor_bottom, body, defs_extra=""):
-    """배경(벽+바닥+왼쪽 석양빛)과 물건을 감싼 SVG."""
+    """背景(壁 + 床 + 左からの夕日)で商品を包んだ SVG。"""
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}">
 <defs>
 {lin("wall", [(0, wall_top, 1), (1, wall_bottom, 1)], 0, 0, 0, 1)}
@@ -70,7 +70,7 @@ def amber_glass_id(prefix):
 
 
 def rollon(cx, base=BASE_Y, w=150, h=250, scale=1.0, tag=True, glass="A"):
-    """오일 퍼퓸(롤온) 병. 갈색 유리, 어두운 캡, 빈 종이 태그."""
+    """オイルパフューム(ロールオン)のボトル。茶色のガラス、暗いキャップ、無地の紙タグ。"""
     w, h = w * scale, h * scale
     x = cx - w / 2
     top = base - h
@@ -96,7 +96,7 @@ def rollon(cx, base=BASE_Y, w=150, h=250, scale=1.0, tag=True, glass="A"):
 
 
 def tube(cx, color_a, color_b, base=BASE_Y, w=150, h=330):
-    """핸드 퍼퓸 알루미늄 튜브(캡을 아래로 세운 형태)."""
+    """ハンドパフュームのアルミチューブ(キャップを下にして立てた形)。"""
     x = cx - w / 2
     top = base - h
     return f'''<g>
@@ -207,7 +207,7 @@ def stone(cx, w=360):
             f'<ellipse cx="{cx - 30}" cy="{BASE_Y + 12}" rx="{w * 0.85}" ry="22" fill="#D9C8AC"/>')
 
 
-# ---------- SKU별 장면 ----------
+# ---------- SKU ごとの場面 ----------
 
 def make(sku):
     rb = amber_glass_id("rbA")
@@ -239,7 +239,7 @@ def make(sku):
         body = (cedar(cx + 120, BASE_Y + 22, 300, -10, seed=8) + shadow(cx - 50, 110) + g)
         return scene(sku, "#CFD8B5", "#E6E6D2", "#F1ECDF", "#D7D0BC", "#BDB59B", body, d)
     if sku == "KP-CAR-DUSK":
-        # 어두운 가죽 위의 작은 테라코타 병 + 나무 캡 + 통풍구 클립
+        # 暗い革の上の小さなテラコッタのボトル + 木のキャップ + 送風口用クリップ
         body = f'''<rect y="{BASE_Y - 70}" width="{W}" height="{H}" fill="#2A1F1A"/>
 <ellipse cx="400" cy="{BASE_Y + 40}" rx="340" ry="30" fill="#3A2C25" opacity="0.7"/>
 {shadow(400, 100)}
@@ -265,7 +265,7 @@ def make(sku):
         body = stone(cx, 380) + shadow(cx, 150) + j
         return scene(sku, "#F2A260", "#6B3F2E", "#4A2B21", "#7A5640", "#5A3C2C", body, d)
     if sku == "KP-GIFT-TRIAL":
-        # 크림색 선물 상자 위에 3ml 미니 롤온 3개
+        # クリーム色のギフトボックスの上に 3ml のミニロールオンを 3 本
         minis = "".join(rollon(cx + dx, base=BASE_Y - 70, w=96, h=150, scale=1, tag=True) for dx in (-130, 0, 130))
         body = f'''{shadow(cx, 280)}
 <rect x="{cx - 290}" y="{BASE_Y - 70}" width="580" height="90" rx="6" fill="url(#box)"/>
@@ -302,7 +302,7 @@ SKUS = ["KP-OIL-SALAR", "KP-OIL-DUSK", "KP-OIL-CEDAR", "KP-HAND-SALAR", "KP-HAND
 def render(svg: str) -> Image.Image:
     png = resvg_py.svg_to_bytes(svg_string=svg, width=W * 2, height=H * 2)
     img = Image.open(io.BytesIO(png)).convert("RGB")
-    # 약한 필름 입자: 그라데이션 띠(banding)를 줄이고 인쇄물 같은 질감을 준다
+    # 弱いフィルム粒子: グラデーションの縞(バンディング)を減らし、印刷物のような質感を出す
     arr = np.asarray(img).astype(np.float32)
     rng = np.random.default_rng(1)
     arr += rng.normal(0, 2.2, arr.shape[:2])[..., None]
